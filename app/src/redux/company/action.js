@@ -38,3 +38,17 @@ export const deleteCompanyAction = (data) => async (dispatch) => {
         dispatch({ type: TYPE.COMPANY_DELETE_FAIL, payload: err.response.data.error });
     }
 };
+
+export const updateCompanyAction = (id, data) => async (dispatch) => {  
+    if (data?.clear) {
+        dispatch({ type: TYPE.COMPANY_UPDATE_CLEAR });
+        return;
+    }
+    dispatch({ type: TYPE.COMPANY_UPDATE_REQ });
+    try {
+        const response = await API.updateCompany(id, data);
+        dispatch({ type: TYPE.COMPANY_UPDATE_SUCCESS, payload: response.data });
+    } catch (err) {
+        dispatch({ type: TYPE.COMPANY_UPDATE_FAIL, payload: err.response.data.error });
+    }
+};

@@ -19,7 +19,7 @@ const Company = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [selectedRow, setSelectedRow] = useState([]);
     const { dispatchGetCompany, dispatchDeleteCompany } = useCompanyDispatch();
-    const { companyList, companyDelete, companyCreate } = useCompanyState();
+    const { companyList, companyDelete, companyCreate, companyUpdate } = useCompanyState();
 
     const columns = [
         {
@@ -97,7 +97,7 @@ const Company = () => {
             setSelectedRow([]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [companyCreate?.done, companyDelete?.done]);
+    }, [companyCreate?.done, companyDelete?.done, companyUpdate?.done]);
 
     return (
         <>

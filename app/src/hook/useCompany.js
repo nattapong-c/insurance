@@ -5,7 +5,8 @@ export const useCompanyState = () => {
     const companyCreate = useSelector((state) => state.company.create);
     const companyList = useSelector((state) => state.company.list);
     const companyDelete = useSelector((state) => state.company.delete);
-    return { companyCreate, companyList, companyDelete };
+    const companyUpdate = useSelector((state) => state.company.update);
+    return { companyCreate, companyList, companyDelete, companyUpdate };
 };
 
 export const useCompanyDispatch = () => {
@@ -15,7 +16,7 @@ export const useCompanyDispatch = () => {
     };
 
     const dispatchClearCreateCompany = () => {
-        dispatch(ACTION.createCompanyAction({clear: true}));
+        dispatch(ACTION.createCompanyAction({ clear: true }));
     };
 
     const dispatchGetCompany = () => {
@@ -26,10 +27,20 @@ export const useCompanyDispatch = () => {
         dispatch(ACTION.deleteCompanyAction(data));
     };
 
+    const dispatchUpdateCompany = (id, data) => {
+        dispatch(ACTION.updateCompanyAction(id, data));
+    };
+
+    const dispatchClearUpdateCompany = () => {
+        dispatch(ACTION.updateCompanyAction("", { clear: true }));
+    };
+
     return {
         dispatchCreateCompany,
         dispatchClearCreateCompany,
         dispatchGetCompany,
-        dispatchDeleteCompany
+        dispatchDeleteCompany,
+        dispatchUpdateCompany,
+        dispatchClearUpdateCompany
     };
 };

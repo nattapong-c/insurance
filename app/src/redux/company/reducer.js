@@ -63,3 +63,25 @@ export const deleteCompanyReducer = (state = initDeleteCompanyList, { type, payl
             return state;
     }
 }
+
+const initUpdateCompany = {
+    company: [],
+    loading: false,
+    error: null,
+    done: false
+};
+
+export const updateCompanyReducer = (state = initUpdateCompany, { type, payload }) => {
+    switch (type) {
+        case TYPE.COMPANY_UPDATE_REQ:
+            return { ...state, loading: true, done: false }
+        case TYPE.COMPANY_UPDATE_SUCCESS:
+            return { ...state, loading: false, error: null, company: payload.data, done: true }
+        case TYPE.COMPANY_UPDATE_FAIL:
+            return { ...state, loading: false, error: payload, done: true }
+        case TYPE.COMPANY_UPDATE_CLEAR:
+            return state
+        default:
+            return state;
+    }
+}

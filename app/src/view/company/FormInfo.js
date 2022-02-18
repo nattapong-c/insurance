@@ -7,11 +7,12 @@ import Loading from '../../component/loading/Loading';
 const FormInfo = (props) => {
     const { info, isUpdate } = props;
     const [form] = Form.useForm();
-    const { dispatchCreateCompany, dispatchClearCreateCompany } = useCompanyDispatch();
-    const { companyCreate } = useCompanyState();
+    const { dispatchCreateCompany, dispatchClearCreateCompany, dispatchUpdateCompany, dispatchClearUpdateCompany } = useCompanyDispatch();
+    const { companyCreate, companyUpdate } = useCompanyState();
 
     useEffect(() => {
         dispatchClearCreateCompany();
+        dispatchClearUpdateCompany();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -34,10 +35,10 @@ const FormInfo = (props) => {
     }, [info, isUpdate]);
 
     useEffect(() => {
-        if (companyCreate?.done) {
-            if (companyCreate?.error) {
+        if (companyCreate?.done || companyUpdate?.done) {
+            if (companyCreate?.error || companyUpdate?.error) {
                 notification.error({
-                    message: companyCreate?.error,
+                    message: isUpdate ? companyUpdate?.error : companyCreate?.error,
                     placement: "bottomRight",
                     duration: 2.5
                 });
@@ -57,11 +58,12 @@ const FormInfo = (props) => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [companyCreate.done])
+    }, [companyCreate.done, companyUpdate.done])
 
     const onFinish = (e) => {
         if (isUpdate) {
             console.log("call update")
+            dispatchUpdateCompany(info?._id, e);
         } else {
             dispatchCreateCompany(e);
         }
@@ -69,9 +71,9 @@ const FormInfo = (props) => {
 
     return (
         <>
-            <h4>Create company</h4>
+            <h4>{isUpdate ? "Update" : "Create"} company</h4>
             <div>
-                <Loading show={companyCreate?.loading}>
+                <Loading show={companyCreate?.loading || companyUpdate?.loading}>
                     <Form form={form} colon={false} onFinish={onFinish}>
                         <Form.Item
                             name="id_company"
