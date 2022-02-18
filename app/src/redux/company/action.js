@@ -1,7 +1,11 @@
 import * as API from './api';
 import * as TYPE from './type';
 
-export const createCompanyAction = (data) => async (dispatch) => {
+export const createCompanyAction = (data) => async (dispatch) => {  
+    if (data?.clear) {
+        dispatch({ type: TYPE.COMPANY_CREATE_CLEAR });
+        return;
+    }
     dispatch({ type: TYPE.COMPANY_CREATE_REQ });
     try {
         const response = await API.createCompany(data);
@@ -18,5 +22,19 @@ export const getCompanyListAction = () => async (dispatch) => {
         dispatch({ type: TYPE.COMPANY_GET_LIST_SUCCESS, payload: response.data });
     } catch (err) {
         dispatch({ type: TYPE.COMPANY_GET_LIST_FAIL, payload: err.response.data.error });
+    }
+};
+
+export const deleteCompanyAction = (data) => async (dispatch) => {  
+    if (data?.clear) {
+        dispatch({ type: TYPE.COMPANY_DELETE_CLEAR });
+        return;
+    }
+    dispatch({ type: TYPE.COMPANY_DELETE_REQ });
+    try {
+        const response = await API.deleteCompanyList(data);
+        dispatch({ type: TYPE.COMPANY_DELETE_SUCCESS, payload: response.data });
+    } catch (err) {
+        dispatch({ type: TYPE.COMPANY_DELETE_FAIL, payload: err.response.data.error });
     }
 };

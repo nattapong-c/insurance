@@ -6,6 +6,7 @@ import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import FormInfo from "../../view/company/FormInfo";
 import _ from 'lodash';
 import { useCompanyDispatch, useCompanyState } from '../../hook/useCompany';
+import Loading from "../../component/loading/Loading";
 
 const getWidthDrawer = () => {
     const screen = window.innerWidth;
@@ -17,8 +18,8 @@ const Company = () => {
     const [openForm, setOpenForm] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [selectedRow, setSelectedRow] = useState([]);
-    const { dispatchGetCompany } = useCompanyDispatch();
-    const { companyList } = useCompanyState();
+    const { dispatchGetCompany, dispatchDeleteCompany } = useCompanyDispatch();
+    const { companyList, companyDelete, companyCreate } = useCompanyState();
 
     const columns = [
         {
@@ -81,7 +82,8 @@ const Company = () => {
     };
 
     const deleteData = () => {
-        console.log(selectedRow)
+        let idList = selectedRow.map(i => `id_list=${i}`).join("&");
+        dispatchDeleteCompany(idList);
     };
 
     useEffect(() => {
@@ -89,33 +91,43 @@ const Company = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        dispatchGetCompany();
+        if (companyDelete?.done) {
+            setSelectedRow([]);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [companyCreate?.done, companyDelete?.done]);
+
     return (
         <>
-            <Wrapper page="company">
-                <h1>บริษัทประกัน</h1>
-                <FilterWrapper>
-                    <Input placeholder="ชื่อบริษัท" />
-                    <Button type="primary">ค้นหา</Button>
-                </FilterWrapper>
-                <ActionsWrapper>
-                    <Button hidden={!selectedRow.length} danger onClick={() => deleteData()}><DeleteOutlined /></Button>
-                    <Button type="primary" onClick={() => createData()}><PlusOutlined /></Button>
-                </ActionsWrapper>
-                <Table
-                    columns={columns}
-                    dataSource={companyList.companyList}
-                    rowKey="_id"
-                    rowSelection={rowSelection}
-                />
-                <Drawer
-                    onClose={() => setOpenForm(false)}
-                    visible={openForm}
-                    width={getWidthDrawer()}
-                >
-                    <FormInfo info={data} isUpdate={isUpdate} />
-                </Drawer>
+            <Loading show={companyDelete?.loading}>
+                <Wrapper page="company">
+                    <h1>บริษัทประกัน</h1>
+                    <FilterWrapper>
+                        <Input placeholder="ชื่อบริษัท" />
+                        <Button type="primary">ค้นหา</Button>
+                    </FilterWrapper>
+                    <ActionsWrapper>
+                        <Button hidden={!selectedRow.length} danger onClick={() => deleteData()}><DeleteOutlined /></Button>
+                        <Button type="primary" onClick={() => createData()}><PlusOutlined /></Button>
+                    </ActionsWrapper>
+                    <Table
+                        columns={columns}
+                        dataSource={companyList.companyList}
+                        rowKey="_id"
+                        rowSelection={rowSelection}
+                    />
+                    <Drawer
+                        onClose={() => setOpenForm(false)}
+                        visible={openForm}
+                        width={getWidthDrawer()}
+                    >
+                        <FormInfo info={data} isUpdate={isUpdate} />
+                    </Drawer>
 
-            </Wrapper>
+                </Wrapper>
+            </Loading>
         </>
     )
 };

@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as ACTION from '../redux/company/action';
 
 export const useCompanyState = () => {
-    const companyInfo = useSelector((state) => state.company.create);
+    const companyCreate = useSelector((state) => state.company.create);
     const companyList = useSelector((state) => state.company.list);
-    return { companyInfo, companyList };
+    const companyDelete = useSelector((state) => state.company.delete);
+    return { companyCreate, companyList, companyDelete };
 };
 
 export const useCompanyDispatch = () => {
@@ -13,12 +14,22 @@ export const useCompanyDispatch = () => {
         dispatch(ACTION.createCompanyAction(data));
     };
 
+    const dispatchClearCreateCompany = () => {
+        dispatch(ACTION.createCompanyAction({clear: true}));
+    };
+
     const dispatchGetCompany = () => {
         dispatch(ACTION.getCompanyListAction());
     };
 
+    const dispatchDeleteCompany = (data) => {
+        dispatch(ACTION.deleteCompanyAction(data));
+    };
+
     return {
         dispatchCreateCompany,
-        dispatchGetCompany
+        dispatchClearCreateCompany,
+        dispatchGetCompany,
+        dispatchDeleteCompany
     };
 };

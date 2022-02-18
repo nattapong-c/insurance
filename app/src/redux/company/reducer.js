@@ -3,17 +3,20 @@ import * as TYPE from './type';
 const initCompanyInfo = {
     loading: false,
     error: null,
-    newCompany: null
+    done: false,
+    info: null
 };
 
 export const createCompanyReducer = (state = initCompanyInfo, { type, payload }) => {
     switch (type) {
         case TYPE.COMPANY_CREATE_REQ:
-            return { ...state, loading: true }
+            return { ...state, loading: true, done: false }
         case TYPE.COMPANY_CREATE_SUCCESS:
-            return { ...state, loading: false, error: null, companyList: payload.data }
+            return { ...state, loading: false, error: null, info: payload.data, done: true }
         case TYPE.COMPANY_CREATE_FAIL:
-            return { ...state, loading: false, error: payload }
+            return { ...state, loading: false, error: payload, done: true }
+        case TYPE.COMPANY_CREATE_CLEAR:
+            return state;
         default:
             return state;
     }
@@ -33,6 +36,29 @@ export const getCompanyListReducer = (state = initCompanyList, { type, payload }
             return { ...state, loading: false, error: null, companyList: payload.data }
         case TYPE.COMPANY_GET_LIST_FAIL:
             return { ...state, loading: false, error: payload }
+        default:
+            return state;
+    }
+}
+
+
+const initDeleteCompanyList = {
+    companyList: [],
+    loading: false,
+    error: null,
+    done: false
+};
+
+export const deleteCompanyReducer = (state = initDeleteCompanyList, { type, payload }) => {
+    switch (type) {
+        case TYPE.COMPANY_DELETE_REQ:
+            return { ...state, loading: true, done: false }
+        case TYPE.COMPANY_DELETE_SUCCESS:
+            return { ...state, loading: false, error: null, companyList: payload.data, done: true }
+        case TYPE.COMPANY_DELETE_FAIL:
+            return { ...state, loading: false, error: payload, done: true }
+        case TYPE.COMPANY_DELETE_CLEAR:
+            return state
         default:
             return state;
     }

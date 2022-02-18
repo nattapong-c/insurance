@@ -1,23 +1,27 @@
-import './loading.css';
 import PropTypes from 'prop-types';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const Loading = (props) => {
-    const { show, inline } = props;
+    const { show, children } = props;
+    const Icon = <LoadingOutlined />;
     return (
-        <div className={`${inline ? 'loading-inline' : 'loading-overlay'} ${show ? 'active' : ''}`}>
-            Loading...
-        </div>
+        <>
+            <Spin spinning={show} indicator={Icon}>
+                {children}
+            </Spin>
+        </>
     )
 };
 
 Loading.propTypes = {
     show: PropTypes.bool,
-    inline: PropTypes.bool
+    children: PropTypes.node
 };
 
 Loading.defaultProps = {
     show: false,
-    inline: false
+    children: null
 };
 
 export default Loading;
