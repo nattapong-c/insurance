@@ -62,7 +62,6 @@ const FormInfo = (props) => {
 
     const onFinish = (e) => {
         if (isUpdate) {
-            console.log("call update")
             dispatchUpdateCompany(info?._id, e);
         } else {
             dispatchCreateCompany(e);
