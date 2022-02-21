@@ -88,8 +88,8 @@ const Customer = () => {
     };
 
     const onClickSearch = () => {
-        let params = "";
-        if (filter) params += `page=1&size=${SIZE_DATA}&plate_number=${filter}`;
+        let params = `page=1&size=${SIZE_DATA}`;
+        if (filter) params += `&plate_number=${filter}`;
         dispatchGetCustomer(params);
     };
 

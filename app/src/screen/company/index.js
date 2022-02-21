@@ -13,6 +13,8 @@ const getWidthDrawer = () => {
     return screen > 768 ? "50%" : "100vw";
 }
 
+const SIZE_DATA = 100;
+
 const Company = () => {
     const [data, setData] = useState(null);
     const [openForm, setOpenForm] = useState(false);
@@ -96,18 +98,22 @@ const Company = () => {
     };
 
     const onClickSearch = () => {
-        let params = "";
-        if (filter) params += `name=${filter}`;
+        let params = `page=1&size=${SIZE_DATA}`;
+        if (filter) params += `&name=${filter}`;
         dispatchGetCompany(params);
     };
 
+    const onTableChange = (pagination) => {
+        dispatchGetCompany(`page=${pagination.current}&size=${SIZE_DATA}`);
+    }
+
     useEffect(() => {
-        dispatchGetCompany();
+        dispatchGetCompany(`page=1&size=${SIZE_DATA}`);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        dispatchGetCompany();
+        dispatchGetCompany(`page=1&size=${SIZE_DATA}`);
         if (companyDelete?.done) {
             setSelectedRow([]);
         }
@@ -133,6 +139,8 @@ const Company = () => {
                         rowKey="_id"
                         rowSelection={rowSelection}
                         scroll={window.innerWidth > 768 ? {} : { x: 1200, y: 500 }}
+                        onChange={onTableChange}
+                        pagination={{ defaultPageSize: SIZE_DATA, total: companyList.totalItem }}
                     />
                     <Drawer
                         onClose={() => setOpenForm(false)}

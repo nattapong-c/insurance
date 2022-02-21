@@ -24,6 +24,7 @@ export const createCompanyReducer = (state = initCompanyInfo, { type, payload })
 
 const initCompanyList = {
     companyList: [],
+    totalItem: 0,
     loading: false,
     error: null
 };
@@ -33,7 +34,7 @@ export const getCompanyListReducer = (state = initCompanyList, { type, payload }
         case TYPE.COMPANY_GET_LIST_REQ:
             return { ...state, loading: true }
         case TYPE.COMPANY_GET_LIST_SUCCESS:
-            return { ...state, loading: false, error: null, companyList: payload.data }
+            return { ...state, loading: false, error: null, companyList: payload.data, totalItem: payload.total_item }
         case TYPE.COMPANY_GET_LIST_FAIL:
             return { ...state, loading: false, error: payload }
         default:
