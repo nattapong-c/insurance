@@ -19,8 +19,8 @@ export const useCustomerDispatch = () => {
         dispatch(ACTION.createCustomerAction({ clear: true }));
     };
 
-    const dispatchGetCustomer = () => {
-        dispatch(ACTION.getCustomerListAction());
+    const dispatchGetCustomer = (params) => {
+        dispatch(ACTION.getCustomerListAction(params));
     };
 
     const dispatchDeleteCustomer = (data) => {

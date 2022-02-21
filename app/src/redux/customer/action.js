@@ -15,10 +15,10 @@ export const createCustomerAction = (data) => async (dispatch) => {
     }
 };
 
-export const getCustomerListAction = () => async (dispatch) => {
+export const getCustomerListAction = (params) => async (dispatch) => {
     dispatch({ type: TYPE.CUSTOMER_GET_LIST_REQ });
     try {
-        const response = await API.getCustomerList();
+        const response = await API.getCustomerList(params);
         dispatch({ type: TYPE.CUSTOMER_GET_LIST_SUCCESS, payload: response.data });
     } catch (err) {
         dispatch({ type: TYPE.CUSTOMER_GET_LIST_FAIL, payload: err.response.data.error });

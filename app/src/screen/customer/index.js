@@ -18,6 +18,7 @@ const Customer = () => {
     const [openForm, setOpenForm] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [selectedRow, setSelectedRow] = useState([]);
+    const [filter, setFilter] = useState(null);
     const { dispatchGetCustomer, dispatchDeleteCustomer } = useCustomerDispatch();
     const { customerCreate, customerDelete, customerList, customerUpdate } = useCustomerState();
 
@@ -80,6 +81,20 @@ const Customer = () => {
         dispatchDeleteCustomer(idList);
     };
 
+    const onFilterChange = (e) => {
+        setFilter(e.target.value);
+    };
+
+    const onClickSearch = () => {
+        let params = "";
+        if (filter) params += `plate_number=${filter}`;
+        dispatchGetCustomer(params);
+    };
+
+    const onTableChange = (pagination) => {
+        console.log(pagination)
+    }
+
     useEffect(() => {
         dispatchGetCustomer();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,8 +113,8 @@ const Customer = () => {
                 <Wrapper page="customer">
                     <h1>ลูกค้า</h1>
                     <FilterWrapper>
-                        <Input placeholder="ทะเบียน" />
-                        <Button type="primary">ค้นหา</Button>
+                        <Input placeholder="ทะเบียน" onChange={onFilterChange} />
+                        <Button type="primary" onClick={() => onClickSearch()}>ค้นหา</Button>
                     </FilterWrapper>
                     <ActionsWrapper>
                         <Button hidden={!selectedRow.length} danger onClick={() => deleteData()}><DeleteOutlined /></Button>
@@ -111,6 +126,7 @@ const Customer = () => {
                         rowKey="_id"
                         rowSelection={rowSelection}
                         scroll={window.innerWidth > 768 ? {} : { x: 800, y: 500 }}
+                        onChange={onTableChange}
                     />
                     <Drawer
                         onClose={() => setOpenForm(false)}
