@@ -13,6 +13,8 @@ const getWidthDrawer = () => {
     return screen > 768 ? "50%" : "100vw";
 }
 
+const SIZE_DATA = 100;
+
 const Customer = () => {
     const [data, setData] = useState(null);
     const [openForm, setOpenForm] = useState(false);
@@ -87,21 +89,21 @@ const Customer = () => {
 
     const onClickSearch = () => {
         let params = "";
-        if (filter) params += `plate_number=${filter}`;
+        if (filter) params += `page=1&size=${SIZE_DATA}&plate_number=${filter}`;
         dispatchGetCustomer(params);
     };
 
     const onTableChange = (pagination) => {
-        console.log(pagination)
+        dispatchGetCustomer(`page=${pagination.current}&size=${SIZE_DATA}`);
     }
 
     useEffect(() => {
-        dispatchGetCustomer();
+        dispatchGetCustomer(`page=1&size=${SIZE_DATA}`);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        dispatchGetCustomer();
+        dispatchGetCustomer(`page=1&size=${SIZE_DATA}`);
         if (customerDelete?.done) {
             setSelectedRow([]);
         }
@@ -127,6 +129,7 @@ const Customer = () => {
                         rowSelection={rowSelection}
                         scroll={window.innerWidth > 768 ? {} : { x: 800, y: 500 }}
                         onChange={onTableChange}
+                        pagination={{ defaultPageSize: SIZE_DATA, total: customerList.totalItem }}
                     />
                     <Drawer
                         onClose={() => setOpenForm(false)}

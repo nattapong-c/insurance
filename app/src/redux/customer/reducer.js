@@ -24,6 +24,7 @@ export const createCustomerReducer = (state = initCustomerInfo, { type, payload 
 
 const initCustomerList = {
     customerList: [],
+    totalItem: 0,
     loading: false,
     error: null
 };
@@ -33,7 +34,7 @@ export const getCustomerListReducer = (state = initCustomerList, { type, payload
         case TYPE.CUSTOMER_GET_LIST_REQ:
             return { ...state, loading: true }
         case TYPE.CUSTOMER_GET_LIST_SUCCESS:
-            return { ...state, loading: false, error: null, customerList: payload.data }
+            return { ...state, loading: false, error: null, customerList: payload.data, totalItem: payload.total_item }
         case TYPE.CUSTOMER_GET_LIST_FAIL:
             return { ...state, loading: false, error: payload }
         default:
