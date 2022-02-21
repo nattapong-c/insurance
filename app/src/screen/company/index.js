@@ -18,6 +18,7 @@ const Company = () => {
     const [openForm, setOpenForm] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [selectedRow, setSelectedRow] = useState([]);
+    const [filter, setFilter] = useState(null);
     const { dispatchGetCompany, dispatchDeleteCompany } = useCompanyDispatch();
     const { companyList, companyDelete, companyCreate, companyUpdate } = useCompanyState();
 
@@ -90,6 +91,16 @@ const Company = () => {
         dispatchDeleteCompany(idList);
     };
 
+    const onFilterChange = (e) => {
+        setFilter(e.target.value);
+    };
+
+    const onClickSearch = () => {
+        let params = "";
+        if (filter) params += `name=${filter}`;
+        dispatchGetCompany(params);
+    };
+
     useEffect(() => {
         dispatchGetCompany();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,8 +120,8 @@ const Company = () => {
                 <Wrapper page="company">
                     <h1>บริษัทประกัน</h1>
                     <FilterWrapper>
-                        <Input placeholder="ชื่อบริษัท" />
-                        <Button type="primary">ค้นหา</Button>
+                        <Input placeholder="ชื่อบริษัท" onChange={onFilterChange} />
+                        <Button type="primary" onClick={() => onClickSearch()}>ค้นหา</Button>
                     </FilterWrapper>
                     <ActionsWrapper>
                         <Button hidden={!selectedRow.length} danger onClick={() => deleteData()}><DeleteOutlined /></Button>

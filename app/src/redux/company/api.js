@@ -5,8 +5,8 @@ export const createCompany = async (data) => {
     return await axios.post(`${ENV.API_URL}/api/company`, data);
 };
 
-export const getCompanyList = async () => {
-    return await axios.get(`${ENV.API_URL}/api/company`);
+export const getCompanyList = async (params) => {
+    return await axios.get(`${ENV.API_URL}/api/company?${params}`);
 };
 
 export const deleteCompanyList = async (params) => {

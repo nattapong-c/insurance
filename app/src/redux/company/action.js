@@ -15,10 +15,10 @@ export const createCompanyAction = (data) => async (dispatch) => {
     }
 };
 
-export const getCompanyListAction = () => async (dispatch) => {
+export const getCompanyListAction = (params) => async (dispatch) => {
     dispatch({ type: TYPE.COMPANY_GET_LIST_REQ });
     try {
-        const response = await API.getCompanyList();
+        const response = await API.getCompanyList(params);
         dispatch({ type: TYPE.COMPANY_GET_LIST_SUCCESS, payload: response.data });
     } catch (err) {
         dispatch({ type: TYPE.COMPANY_GET_LIST_FAIL, payload: err.response.data.error });

@@ -19,8 +19,8 @@ export const useCompanyDispatch = () => {
         dispatch(ACTION.createCompanyAction({ clear: true }));
     };
 
-    const dispatchGetCompany = () => {
-        dispatch(ACTION.getCompanyListAction());
+    const dispatchGetCompany = (params) => {
+        dispatch(ACTION.getCompanyListAction(params));
     };
 
     const dispatchDeleteCompany = (data) => {
