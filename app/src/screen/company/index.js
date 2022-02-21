@@ -121,7 +121,7 @@ const Company = () => {
                         dataSource={companyList.companyList}
                         rowKey="_id"
                         rowSelection={rowSelection}
-                        scroll={window.innerWidth > 768 ? {} : { x: 1600, y: 500 }}
+                        scroll={window.innerWidth > 768 ? {} : { x: 1200, y: 500 }}
                     />
                     <Drawer
                         onClose={() => setOpenForm(false)}
