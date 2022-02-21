@@ -23,17 +23,11 @@ const Company = () => {
 
     const columns = [
         {
-            title: 'เลขผู้เสียภาษี',
-            dataIndex: 'id_company',
-            key: 'id_company',
-            fixed: 'left',
-            width: 100
-        },
-        {
             title: 'ชื่อ',
             dataIndex: 'name',
             key: 'name',
-            width: window.innerWidth > 768 ? 0 : 300,
+            fixed: 'left',
+            width: window.innerWidth > 768 ? 0 : 150,
             render: (text) => (
                 <Tooltip title={text}>
                     <TextOverflow>{text}</TextOverflow>
@@ -41,10 +35,15 @@ const Company = () => {
             )
         },
         {
+            title: 'เลขผู้เสียภาษี',
+            dataIndex: 'id_company',
+            key: 'id_company',
+            width: 180
+        },
+        {
             title: 'ที่อยู่',
             dataIndex: 'address',
             key: 'address',
-            width: window.innerWidth > 768 ? 0 : 400,
             render: (text) => (
                 <Tooltip title={text}>
                     <TextOverflow>{text}</TextOverflow>
@@ -55,7 +54,7 @@ const Company = () => {
             title: 'actions',
             key: 'actions',
             dataIndex: '_id',
-            width: 80,
+            width: 90,
             render: (text) => (
                 <>
                     <Button onClick={() => selectData(companyList.companyList, text)}><EditOutlined /></Button>
