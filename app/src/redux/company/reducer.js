@@ -65,7 +65,7 @@ export const deleteCompanyReducer = (state = initDeleteCompanyList, { type, payl
 }
 
 const initUpdateCompany = {
-    company: [],
+    company: null,
     loading: false,
     error: null,
     done: false
