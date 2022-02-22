@@ -17,6 +17,9 @@ export const getLatestInvoice = async () => {
     return await axios.get(`${ENV.API_URL}/api/invoice/latest`);
 };
 
+export const exportInvoice = async (invoiceNumber) => {
+    return await axios.get(`${ENV.API_URL}/api/invoice/${invoiceNumber}/export`, { responseType: 'arraybuffer' });
+};
 // export const updateCompany = async (id, data) => {
 //     return await axios.put(`${ENV.API_URL}/api/company/${id}`, data);
 // };

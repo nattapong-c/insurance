@@ -6,7 +6,8 @@ export const useInvoiceState = () => {
     const invoiceList = useSelector((state) => state.invoice.list);
     const invoiceDelete = useSelector((state) => state.invoice.delete);
     const invoiceLatest = useSelector((state) => state.invoice.latest);
-    return { invoiceCreate, invoiceList, invoiceDelete, invoiceLatest };
+    const invoiceExport = useSelector((state) => state.invoice.export);
+    return { invoiceCreate, invoiceList, invoiceDelete, invoiceLatest, invoiceExport };
 };
 
 export const useInvoiceDispatch = () => {
@@ -30,11 +31,17 @@ export const useInvoiceDispatch = () => {
     const dispatchGetLatestInvoice = () => {
         dispatch(ACTION.getLatestInvoiceAction());
     }
+
+    const dispatchExportInvoice = (invoiceNumber) => {
+        dispatch(ACTION.exportInvoiceAction(invoiceNumber));
+    }
+
     return {
         dispatchCreateInvoice,
         dispatchClearCreateInvoice,
         dispatchGetInvoice,
         dispatchDeleteInvoice,
-        dispatchGetLatestInvoice
+        dispatchGetLatestInvoice,
+        dispatchExportInvoice
     }
 };

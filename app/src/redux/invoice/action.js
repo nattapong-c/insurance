@@ -48,3 +48,20 @@ export const getLatestInvoiceAction = () => async (dispatch) => {
         dispatch({ type: TYPE.INVOICE_GET_LATEST_FAIL, payload: err.response.data.error });
     }
 };
+
+export const exportInvoiceAction = (invoiceNumber) => async (dispatch) => {
+    dispatch({ type: TYPE.INVOICE_EXPORT_REQ });
+    try {
+        const response = await API.exportInvoice(invoiceNumber);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${invoiceNumber}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        dispatch({ type: TYPE.INVOICE_EXPORT_SUCCESS });
+    } catch (err) {
+        dispatch({ type: TYPE.INVOICE_EXPORT_FAIL, payload: err?.response ? err.response.data.error : err });
+    }
+};

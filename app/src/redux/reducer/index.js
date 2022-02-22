@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { createCompanyReducer, getCompanyListReducer, deleteCompanyReducer, updateCompanyReducer } from '../company/reducer';
 import { createCustomerReducer, getCustomerListReducer, deleteCustomerReducer, updateCustomerReducer } from '../customer/reducer';
-import { getInvoiceListReducer, getLatestInvoiceReducer, createInvoiceReducer, deleteInvoiceReducer } from '../invoice/reducer';
+import { getInvoiceListReducer, getLatestInvoiceReducer, createInvoiceReducer, deleteInvoiceReducer, exportInvoiceReducer } from '../invoice/reducer';
 
 const appReducer = combineReducers({
     company: combineReducers({
@@ -20,7 +20,8 @@ const appReducer = combineReducers({
         create: createInvoiceReducer,
         delete: deleteInvoiceReducer,
         list: getInvoiceListReducer,
-        latest: getLatestInvoiceReducer
+        latest: getLatestInvoiceReducer,
+        export: exportInvoiceReducer
     })
 });
 

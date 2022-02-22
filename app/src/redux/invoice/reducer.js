@@ -82,3 +82,21 @@ export const getLatestInvoiceReducer = (state = initLatestInfo, { type, payload 
             return state;
     }
 }
+
+const initExport = {
+    loading: false,
+    error: null
+};
+
+export const exportInvoiceReducer = (state = initExport, { type, payload }) => {
+    switch (type) {
+        case TYPE.INVOICE_EXPORT_REQ:
+            return { ...state, loading: true }
+        case TYPE.INVOICE_EXPORT_SUCCESS:
+            return { ...state, loading: false, error: null }
+        case TYPE.INVOICE_EXPORT_FAIL:
+            return { ...state, loading: false, error: payload }
+        default:
+            return state;
+    }
+}

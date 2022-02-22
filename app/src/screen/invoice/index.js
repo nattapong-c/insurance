@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Wrapper from "../../component/wrapper/Wrapper";
 import { Table, Tooltip, Input, Button, Drawer } from 'antd';
 import { TextOverflow, FilterWrapper, ActionsWrapper } from './styled-component';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined, ExportOutlined } from '@ant-design/icons';
 import FormInfo from "../../view/invoice/FormInfo";
 import _ from 'lodash';
 import { useInvoiceDispatch, useInvoiceState } from '../../hook/useInvoice';
@@ -24,8 +24,8 @@ const Invoice = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [selectedRow, setSelectedRow] = useState([]);
     const [filter, setFilter] = useState(null);
-    const { dispatchGetInvoice, dispatchDeleteInvoice } = useInvoiceDispatch();
-    const { invoiceCreate, invoiceDelete, invoiceList } = useInvoiceState();
+    const { dispatchGetInvoice, dispatchDeleteInvoice, dispatchExportInvoice } = useInvoiceDispatch();
+    const { invoiceCreate, invoiceDelete, invoiceList, invoiceExport } = useInvoiceState();
     const { dispatchGetCompany } = useCompanyDispatch();
     const { dispatchGetCustomer } = useCustomerDispatch();
 
@@ -63,7 +63,18 @@ const Invoice = () => {
                     <Button onClick={() => selectData(invoiceList.list, text)}><EditOutlined /></Button>
                 </>
             )
-        }
+        },
+        {
+            title: 'export',
+            key: 'export',
+            dataIndex: 'invoice_no',
+            width: 90,
+            render: (text) => (
+                <>
+                    <Button onClick={() => dispatchExportInvoice(text)}><ExportOutlined /></Button>
+                </>
+            )
+        },
     ];
 
     const selectData = (data, id) => {
@@ -124,7 +135,7 @@ const Invoice = () => {
 
     return (
         <>
-            <Loading show={invoiceList?.loading || invoiceDelete?.loading}>
+            <Loading show={invoiceList?.loading || invoiceDelete?.loading || invoiceExport?.loading}>
                 <Wrapper page="invoice">
                     <h1>ใบวางบิล</h1>
                     <FilterWrapper>
