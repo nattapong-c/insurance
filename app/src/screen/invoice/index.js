@@ -124,7 +124,7 @@ const Invoice = () => {
 
     return (
         <>
-            <Loading show={invoiceCreate?.loading || invoiceDelete?.loading}>
+            <Loading show={invoiceList?.loading || invoiceDelete?.loading}>
                 <Wrapper page="invoice">
                     <h1>ใบวางบิล</h1>
                     <FilterWrapper>
