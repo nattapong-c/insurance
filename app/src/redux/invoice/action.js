@@ -9,6 +9,13 @@ export const createInvoiceAction = (data) => async (dispatch) => {
     dispatch({ type: TYPE.INVOICE_CREATE_REQ });
     try {
         const response = await API.createInvoice(data);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${data.invoice_no}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
         dispatch({ type: TYPE.INVOICE_CREATE_SUCCESS, payload: response.data });
     } catch (err) {
         dispatch({ type: TYPE.INVOICE_CREATE_FAIL, payload: err.response.data.error });
