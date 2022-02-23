@@ -99,11 +99,6 @@ const Customer = () => {
 
     useEffect(() => {
         dispatchGetCustomer(`page=1&size=${SIZE_DATA}`);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        dispatchGetCustomer(`page=1&size=${SIZE_DATA}`);
         if (customerDelete?.done) {
             setSelectedRow([]);
         }

@@ -122,11 +122,6 @@ const Invoice = () => {
         dispatchGetInvoice(`page=1&size=${SIZE_DATA}`);
         dispatchGetCompany(`page=1&size=${SIZE_DATA}`);
         dispatchGetCustomer(`page=1&size=${SIZE_DATA}`);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        dispatchGetInvoice(`page=1&size=${SIZE_DATA}`);
         if (invoiceDelete?.done) {
             setSelectedRow([]);
         }

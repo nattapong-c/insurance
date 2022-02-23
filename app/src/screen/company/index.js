@@ -109,11 +109,6 @@ const Company = () => {
 
     useEffect(() => {
         dispatchGetCompany(`page=1&size=${SIZE_DATA}`);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        dispatchGetCompany(`page=1&size=${SIZE_DATA}`);
         if (companyDelete?.done) {
             setSelectedRow([]);
         }
