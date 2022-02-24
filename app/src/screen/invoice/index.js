@@ -16,7 +16,7 @@ const getWidthDrawer = () => {
     return screen > 768 ? "50%" : "100vw";
 }
 
-const SIZE_DATA = 100;
+const SIZE_DATA = 50;
 
 const Invoice = () => {
     const [data, setData] = useState(null);
@@ -120,8 +120,8 @@ const Invoice = () => {
 
     useEffect(() => {
         dispatchGetInvoice(`page=1&size=${SIZE_DATA}`);
-        dispatchGetCompany(`page=1&size=${SIZE_DATA}`);
-        dispatchGetCustomer(`page=1&size=${SIZE_DATA}`);
+        dispatchGetCompany(`page=1&size=100`);
+        dispatchGetCustomer(`page=1&size=100`);
         if (invoiceDelete?.done) {
             setSelectedRow([]);
         }
