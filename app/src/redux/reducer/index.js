@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { createCompanyReducer, getCompanyListReducer, deleteCompanyReducer, updateCompanyReducer } from '../company/reducer';
 import { createCustomerReducer, getCustomerListReducer, deleteCustomerReducer, updateCustomerReducer } from '../customer/reducer';
 import { getInvoiceListReducer, getLatestInvoiceReducer, createInvoiceReducer, deleteInvoiceReducer, exportInvoiceReducer } from '../invoice/reducer';
+import { getCompanyInfoReducer, getCustomerInfoReducer, getInvoiceInfoReducer } from '../dashboard/reducer';
 
 const appReducer = combineReducers({
     company: combineReducers({
@@ -22,6 +23,11 @@ const appReducer = combineReducers({
         list: getInvoiceListReducer,
         latest: getLatestInvoiceReducer,
         export: exportInvoiceReducer
+    }),
+    dashboard: combineReducers({
+        company: getCompanyInfoReducer,
+        customer: getCustomerInfoReducer,
+        invoice: getInvoiceInfoReducer,
     })
 });
 
