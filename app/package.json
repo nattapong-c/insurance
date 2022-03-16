@@ -24,13 +24,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "env:dev": "node src/scripts/set-environment.js dev",
     "env:prod": "node src/scripts/set-environment.js prod",
     "start_dev": "yarn env:dev && yarn start",
-    "build_prod": "yarn env:prod && react-scripts build",
+    "build_prod": "yarn env:prod && yarn build",
     "deploy_firebase": "yarn build_prod && firebase deploy"
   },
   "eslintConfig": {
