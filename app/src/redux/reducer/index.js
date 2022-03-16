@@ -3,6 +3,7 @@ import { createCompanyReducer, getCompanyListReducer, deleteCompanyReducer, upda
 import { createCustomerReducer, getCustomerListReducer, deleteCustomerReducer, updateCustomerReducer } from '../customer/reducer';
 import { getInvoiceListReducer, getLatestInvoiceReducer, createInvoiceReducer, deleteInvoiceReducer, exportInvoiceReducer } from '../invoice/reducer';
 import { getCompanyInfoReducer, getCustomerInfoReducer, getInvoiceInfoReducer } from '../dashboard/reducer';
+import { createQuotationReducer, getQuotationListReducer } from '../quotation/reducer';
 
 const appReducer = combineReducers({
     company: combineReducers({
@@ -28,7 +29,11 @@ const appReducer = combineReducers({
         company: getCompanyInfoReducer,
         customer: getCustomerInfoReducer,
         invoice: getInvoiceInfoReducer,
-    })
+    }),
+    quotation: combineReducers({
+        create: createQuotationReducer,
+        list: getQuotationListReducer,
+    }),
 });
 
 const rootReducer = (state, action) => {

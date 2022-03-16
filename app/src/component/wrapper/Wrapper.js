@@ -52,6 +52,9 @@ const Wrapper = (props) => {
                         <Menu.Item key="invoice" icon={<FileOutlined />}>
                             <Link to="/invoice">ใบวางบิล</Link>
                         </Menu.Item>
+                        <Menu.Item key="quotation" icon={<FileOutlined />}>
+                            <Link to="/quotation">ใบเสนอราคา</Link>
+                        </Menu.Item>
                     </Menu>
                 </Drawer>
 
