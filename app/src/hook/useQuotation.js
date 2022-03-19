@@ -4,10 +4,10 @@ import * as ACTION from '../redux/quotation/action';
 export const useQuotationState = () => {
     const quotationCreate = useSelector((state) => state.quotation.create);
     const quotationList = useSelector((state) => state.quotation.list);
-    // const quotationDelete = useSelector((state) => state.quotation.delete);
-    // const quotationLatest = useSelector((state) => state.quotation.latest);
-    // const quotationExport = useSelector((state) => state.quotation.export);
-    return { quotationCreate, quotationList };
+    const quotationDelete = useSelector((state) => state.quotation.delete);
+    const quotationUpdate = useSelector((state) => state.quotation.update);
+    const quotationExport = useSelector((state) => state.quotation.export);
+    return { quotationCreate, quotationList, quotationUpdate, quotationExport, quotationDelete };
 };
 
 export const useQuotationDispatch = () => {
@@ -25,9 +25,24 @@ export const useQuotationDispatch = () => {
         dispatch(ACTION.getListQuotationAction(params));
     };
 
+    const dispatchUpdateQuotation = (id, data) => {
+        dispatch(ACTION.updateQuotationAction(id,data));
+    };
+
+    const dispatchExportQuotation = (id, data) => {
+        dispatch(ACTION.exportQuotationAction(id, data));
+    }
+
+    const dispatchDeleteQuotation = (params) => {
+        dispatch(ACTION.deleteQuotationAction(params));
+    }
+
     return {
         dispatchCreateQuotation,
         dispatchClearCreateQuotation,
-        dispatchGetQuotation
+        dispatchGetQuotation,
+        dispatchUpdateQuotation,
+        dispatchExportQuotation,
+        dispatchDeleteQuotation
     };
 }

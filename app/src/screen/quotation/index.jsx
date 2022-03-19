@@ -20,8 +20,8 @@ const Quotation = () => {
     const [openForm, setOpenForm] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [selectedRow, setSelectedRow] = useState([]);
-    const { dispatchGetQuotation } = useQuotationDispatch();
-    const { quotationList, quotationCreate } = useQuotationState();
+    const { dispatchGetQuotation, dispatchExportQuotation, dispatchDeleteQuotation } = useQuotationDispatch();
+    const { quotationList, quotationCreate, quotationExport, quotationUpdate, quotationDelete } = useQuotationState();
     const { dispatchGetCompany } = useCompanyDispatch();
     const { dispatchGetCustomer } = useCustomerDispatch();
 
@@ -60,17 +60,22 @@ const Quotation = () => {
         {
             title: "export",
             key: "export",
-            dataIndex: "invoice_no",
+            dataIndex: "_id",
             width: 90,
             render: (text) => (
                 <>
-                    <Button>
+                    <Button onClick={() => dispatchExportQuotation(text, getData(quotationList.list, text))}>
                         <ExportOutlined />
                     </Button>
                 </>
             )
         }
     ];
+
+    const getData = (data, id) => {
+        let selected = _.find(data, { _id: id });
+        return selected;
+    };
 
     const selectData = (data, id) => {
         let selected = _.find(data, { _id: id });
@@ -98,19 +103,24 @@ const Quotation = () => {
         setIsUpdate(false);
     };
 
+    const deleteData = () => {
+        let idList = selectedRow.map((i) => `id_list=${i}`).join("&");
+        dispatchDeleteQuotation(idList);
+    };
+
     useEffect(() => {
         dispatchGetQuotation(`page=1&size=${SIZE_DATA}`);
         dispatchGetCompany(`page=1&size=100`);
         dispatchGetCustomer(`page=1&size=100`);
-        // if (invoiceDelete?.done) {
-        //   setSelectedRow([]);
-        // }
+        if (quotationDelete?.done) {
+            setSelectedRow([]);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quotationCreate?.done]);
+    }, [quotationCreate?.done, quotationUpdate?.done, quotationDelete?.done]);
 
     return (
         <>
-            <Loading show={quotationList?.loading}>
+            <Loading show={quotationList?.loading || quotationExport?.loading || quotationDelete?.loading}>
                 <Wrapper page="quotation">
                     <h1>ใบเสนอราคา</h1>
                     <FilterWrapper>
@@ -118,7 +128,7 @@ const Quotation = () => {
                         <Button type="primary">ค้นหา</Button>
                     </FilterWrapper>
                     <ActionsWrapper>
-                        <Button hidden={!selectedRow.length} danger>
+                        <Button hidden={!selectedRow.length} danger onClick={() => deleteData()}>
                             <DeleteOutlined />
                         </Button>
                         <Button type="primary" onClick={() => createData()}>
@@ -130,7 +140,6 @@ const Quotation = () => {
                         dataSource={quotationList.list}
                         rowKey="_id"
                         rowSelection={rowSelection}
-                        // scroll={window.innerWidth > 768 ? {} : { x: 800, y: 500 }}
                         onChange={onTableChange}
                         pagination={{
                             defaultPageSize: SIZE_DATA,

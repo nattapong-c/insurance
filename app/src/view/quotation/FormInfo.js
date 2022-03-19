@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Proptypes from "prop-types";
-import { Form, Input, Button, notification, DatePicker, Radio, Select, Checkbox, Card } from "antd";
+import { Form, Input, Button, notification, DatePicker, Select, Card } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useQuotationDispatch, useQuotationState } from "../../hook/useQuotation";
 import { useCompanyState } from "../../hook/useCompany";
@@ -16,17 +16,14 @@ const fields = {
 const FormInfo = (props) => {
     const { info, isUpdate } = props;
     const [form] = Form.useForm();
-    const { dispatchClearCreateQuotation, dispatchCreateQuotation } = useQuotationDispatch();
-    const { quotationCreate } = useQuotationState();
+    const { dispatchClearCreateQuotation, dispatchCreateQuotation, dispatchUpdateQuotation } = useQuotationDispatch();
+    const { quotationCreate, quotationUpdate } = useQuotationState();
     const { companyList } = useCompanyState();
     const { customerList } = useCustomerState();
 
     const onFinish = (e) => {
         if (isUpdate) {
-            let updateData = {
-                ...e
-            };
-            //   dispatchCreateInvoice(updateData);
+            dispatchUpdateQuotation(info?._id, e);
         } else {
             dispatchCreateQuotation(e);
         }
@@ -40,12 +37,12 @@ const FormInfo = (props) => {
     useEffect(() => {
         if (isUpdate) {
             let customers = info?.customers.map((c) => {
-                return { 
-                    ...c, 
+                return {
+                    ...c,
                     company_id: _.find(companyList.companyList, { name: c?.company_name })?._id,
                     customer_id: _.find(customerList.customerList, { plate_number: c?.plate_number })?._id,
                     end_date: moment(c?.end_date)
-                 };
+                };
             });
 
             form.setFieldsValue({
@@ -61,11 +58,33 @@ const FormInfo = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [info, isUpdate]);
 
+    useEffect(() => {
+        if (quotationCreate?.done || quotationUpdate?.done) {
+            if (quotationCreate?.error || quotationUpdate?.error) {
+                notification.error({
+                    message: isUpdate ? quotationUpdate?.error : quotationCreate?.error,
+                    placement: "bottomRight",
+                    duration: 2.5
+                });
+            } else {
+                if (!isUpdate) {
+                    form.setFieldsValue(fields);
+                }
+                notification.success({
+                    message: isUpdate ? "Update success" : "Create success",
+                    placement: "bottomRight",
+                    duration: 2.5
+                });
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [quotationCreate.done, quotationUpdate.done]);
+
     return (
         <>
             <h4>{isUpdate ? "Update" : "Create"} quotation</h4>
             <div>
-                <Loading show={quotationCreate?.loading}>
+                <Loading show={quotationCreate?.loading || quotationUpdate?.loading}>
                     <Form form={form} colon={false} onFinish={onFinish}>
                         <Form.Item name="issue_date" label="วันที่" rules={[{ required: true }]}>
                             <DatePicker />
