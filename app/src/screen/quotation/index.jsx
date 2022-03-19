@@ -4,6 +4,8 @@ import { ActionsWrapper, FilterWrapper, TextOverflow } from "./styled-component"
 import { Table, Tooltip, Input, Button, Drawer } from "antd";
 import { PlusOutlined, DeleteOutlined, EditOutlined, ExportOutlined } from "@ant-design/icons";
 import { useQuotationDispatch, useQuotationState } from "../../hook/useQuotation";
+import { useCompanyDispatch } from "../../hook/useCompany";
+import { useCustomerDispatch } from "../../hook/useCustomer";
 import _ from "lodash";
 import Loading from "../../component/loading/Loading";
 import FormInfo from "../../view/quotation/FormInfo";
@@ -20,6 +22,8 @@ const Quotation = () => {
     const [selectedRow, setSelectedRow] = useState([]);
     const { dispatchGetQuotation } = useQuotationDispatch();
     const { quotationList, quotationCreate } = useQuotationState();
+    const { dispatchGetCompany } = useCompanyDispatch();
+    const { dispatchGetCustomer } = useCustomerDispatch();
 
     const columns = [
         {
@@ -96,8 +100,8 @@ const Quotation = () => {
 
     useEffect(() => {
         dispatchGetQuotation(`page=1&size=${SIZE_DATA}`);
-        // dispatchGetCompany(`page=1&size=100`);
-        // dispatchGetCustomer(`page=1&size=100`);
+        dispatchGetCompany(`page=1&size=100`);
+        dispatchGetCustomer(`page=1&size=100`);
         // if (invoiceDelete?.done) {
         //   setSelectedRow([]);
         // }
