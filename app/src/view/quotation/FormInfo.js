@@ -10,7 +10,8 @@ import moment from "moment";
 import _ from "lodash";
 
 const fields = {
-    issue_date: null
+    issue_date: null,
+    customers: []
 };
 
 const FormInfo = (props) => {
