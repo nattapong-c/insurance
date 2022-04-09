@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Statistic, Row, Col, Card } from "antd";
+import { Statistic, Row, Col, Card } from 'antd';
 import Wrapper from '../../component/wrapper/Wrapper';
 import { useDashboardDispatch, useDashboardState } from '../../hook/useDashboard';
 import Loading from '../../component/loading/Loading';

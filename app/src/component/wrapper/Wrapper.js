@@ -5,7 +5,8 @@ import {
     UserOutlined,
     MenuUnfoldOutlined,
     FileOutlined,
-    TeamOutlined
+    TeamOutlined,
+    LogoutOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -41,7 +42,7 @@ const Wrapper = (props) => {
                     >
 
                         <Menu.Item key="home" icon={<DesktopOutlined />}>
-                            <Link to="/">Dashboard</Link>
+                            <Link to="/home">Dashboard</Link>
                         </Menu.Item>
                         <Menu.Item key="customer" icon={<UserOutlined />}>
                             <Link to="/customer">ลูกค้า</Link>
@@ -54,6 +55,9 @@ const Wrapper = (props) => {
                         </Menu.Item>
                         <Menu.Item key="quotation" icon={<FileOutlined />}>
                             <Link to="/quotation">ใบเสนอราคา</Link>
+                        </Menu.Item>
+                        <Menu.Item key="logout" icon={<LogoutOutlined />}>
+                            <Button type='text'>Logout</Button>
                         </Menu.Item>
                     </Menu>
                 </Drawer>
