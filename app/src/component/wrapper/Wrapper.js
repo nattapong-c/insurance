@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Menu, Button, Drawer } from 'antd';
 import { DesktopOutlined, UserOutlined, MenuUnfoldOutlined, FileOutlined, TeamOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { MenuFixed, Content } from './styled-component';
 import { deleteToken } from '../../utils/authen';
@@ -9,11 +9,10 @@ import { deleteToken } from '../../utils/authen';
 const Wrapper = (props) => {
     const { children, page } = props;
     const [visible, setVisible] = useState(false);
-    const navigate = useNavigate();
 
     const logout = () => {
         deleteToken();
-        navigate('/');
+        window.location.reload();
     };
 
     return (
@@ -46,7 +45,7 @@ const Wrapper = (props) => {
                             <Link to="/quotation">ใบเสนอราคา</Link>
                         </Menu.Item>
                         <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => logout()}>
-                            <Button type="text">Logout</Button>
+                            <div>Logout</div>
                         </Menu.Item>
                     </Menu>
                 </Drawer>
