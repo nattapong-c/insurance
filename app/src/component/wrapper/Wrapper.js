@@ -1,46 +1,35 @@
 import { useState } from 'react';
 import { Menu, Button, Drawer } from 'antd';
-import {
-    DesktopOutlined,
-    UserOutlined,
-    MenuUnfoldOutlined,
-    FileOutlined,
-    TeamOutlined,
-    LogoutOutlined
-} from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { DesktopOutlined, UserOutlined, MenuUnfoldOutlined, FileOutlined, TeamOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { MenuFixed, Content } from './styled-component';
+import { deleteToken } from '../../utils/authen';
 
 const Wrapper = (props) => {
     const { children, page } = props;
     const [visible, setVisible] = useState(false);
+    const navigate = useNavigate();
+
+    const logout = () => {
+        deleteToken();
+        navigate('/');
+    };
 
     return (
         <>
             <MenuFixed>
-                <Button style={{
-                    top: '4rem',
-                    backgroundColor: '#fff',
-                    height: '50px'
-                }} onClick={() => setVisible(!visible)}>
+                <Button
+                    style={{
+                        top: '4rem',
+                        backgroundColor: '#fff',
+                        height: '50px'
+                    }}
+                    onClick={() => setVisible(!visible)}>
                     <MenuUnfoldOutlined />
                 </Button>
-                <Drawer
-                    placement='left'
-                    onClose={() => setVisible(false)}
-                    visible={visible}
-                    width={200}
-                    bodyStyle={{ padding: "24px 0" }}
-                >
-                    <Menu
-                        defaultSelectedKeys={[page]}
-                        mode="inline"
-                        theme="light"
-                        inlineCollapsed={false}
-                        style={{ borderRight: 0 }}
-                    >
-
+                <Drawer placement="left" onClose={() => setVisible(false)} visible={visible} width={200} bodyStyle={{ padding: '24px 0' }}>
+                    <Menu defaultSelectedKeys={[page]} mode="inline" theme="light" inlineCollapsed={false} style={{ borderRight: 0 }}>
                         <Menu.Item key="home" icon={<DesktopOutlined />}>
                             <Link to="/home">Dashboard</Link>
                         </Menu.Item>
@@ -56,21 +45,15 @@ const Wrapper = (props) => {
                         <Menu.Item key="quotation" icon={<FileOutlined />}>
                             <Link to="/quotation">ใบเสนอราคา</Link>
                         </Menu.Item>
-                        <Menu.Item key="logout" icon={<LogoutOutlined />}>
-                            <Button type='text'>Logout</Button>
+                        <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => logout()}>
+                            <Button type="text">Logout</Button>
                         </Menu.Item>
                     </Menu>
                 </Drawer>
-
             </MenuFixed>
-            <Content>
-                {children}
-            </Content>
-
-
+            <Content>{children}</Content>
         </>
     );
-
 };
 
 Wrapper.propTypes = {
