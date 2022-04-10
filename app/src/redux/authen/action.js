@@ -7,7 +7,7 @@ export const login = (data) => async (dispatch) => {
         const response = await API.login(data);
         dispatch({ type: TYPE.AUTHEN_LOGIN_SUCCESS, payload: response.data });
     } catch (err) {
-        dispatch({ type: TYPE.AUTHEN_LOGIN_FAIL, payload: err.response.data.error });
+        dispatch({ type: TYPE.AUTHEN_LOGIN_FAIL, payload: err.message ? err.message : err.response.data.error });
     }
 };
 
