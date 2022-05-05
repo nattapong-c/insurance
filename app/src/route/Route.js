@@ -8,7 +8,7 @@ import QuotationScreen from '../screen/quotation';
 import NotFoundScreen from '../screen/404';
 import LoginScreen from '../screen/login';
 import { useAuthenDispatch, useAuthenState } from '../hook/useAuthen';
-import { getToken } from '../utils/authen';
+import { getToken, deleteToken } from '../utils/authen';
 
 const PrivateRoutes = ({ children }) => {
     const { authenCurrent } = useAuthenState();
@@ -23,7 +23,10 @@ const PrivateRoutes = ({ children }) => {
 
     useEffect(() => {
         if (authenCurrent.done) {
-            if (authenCurrent.error) navigate('/');
+            if (authenCurrent.error) {
+                deleteToken();
+                navigate('/');
+            }
             dispatchClearCurrentDone();
         }
     }, [authenCurrent.done]);
