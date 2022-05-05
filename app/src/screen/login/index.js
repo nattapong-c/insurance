@@ -53,7 +53,6 @@ const Login = () => {
             <Loading show={authenLogin?.loading}>
                 <LoginContainer>
                     <div>
-                        <h1>Login</h1>
                         <GoogleLoginButton onClick={() => loginWithGoogle()}>
                             <div className='left'>
                                 <img src={require('../../assets/google-48.png')} width={20}/>
