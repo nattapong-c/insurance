@@ -1,5 +1,5 @@
 {
-  "API_URL": "https://insurance-api-ts.herokuapp.com",
+  "API_URL": "https://insurance-api-jnkc.onrender.com",
   "FIREBASE": {
     "API_KEY": "AIzaSyBrYgOt5-0oXOZSHPTim_4rRPmP6eRcJ7Y",
     "AUTH_DOMAIN": "car-insurance-tools.firebaseapp.com",
