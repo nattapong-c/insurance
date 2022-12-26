@@ -81,16 +81,16 @@ const FormInfo = (props) => {
     }, [invoiceCreate.done])
 
     const onFinish = (e) => {
-        if (isUpdate) {
+        // if (isUpdate) {
             let updateData = {
                 ...e,
                 insurance_receiver_id: e.insurance_receiver,
                 is_company: e.is_company.length > 0
             };
             dispatchCreateInvoice(updateData);
-        } else {
-            dispatchCreateInvoice(e);
-        }
+        // } else {
+        //     dispatchCreateInvoice(e);
+        // }
     };
 
     const onPlateNumberChange = (e) => {
