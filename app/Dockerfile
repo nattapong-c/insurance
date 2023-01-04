@@ -16,6 +16,7 @@ ENV PORT $PORT
 
 COPY --from=deps /app/package.json /app/yarn.lock ./
 COPY --from=deps /app/build ./build
+COPY --from=deps /app/src ./src
 COPY --from=deps /app/public ./public
 
 RUN yarn install --frozen-lockfile
