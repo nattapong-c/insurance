@@ -11,6 +11,9 @@ RUN yarn build_prod
 FROM node:14 AS runner
 WORKDIR /app
 
+ARG PORT
+ENV PORT $PORT
+
 COPY --from=deps /app/package.json /app/yarn.lock ./
 COPY --from=deps /app/build ./build
 COPY --from=deps /app/public ./public
