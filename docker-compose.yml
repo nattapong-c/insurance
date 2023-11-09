@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  app:
+    image: insurance_app
+    container_name: app
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - insurance-nw
+  service:
+    image: insurance_service
+    container_name: service
+    build:
+      context: .
+      dockerfile: service/Dockerfile
+    environment:
+      - JWT_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----"
+      - JWT_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA3FsBR0JEh9a2cAyUwUEX\nWIWnySJ4N6DJNeESbAGGTDdcW+u8+QfOxNF3xooSfXA5Xr6s4A9I2ng3OBMz+JyP\n6SVZsBiieFm4LJ2WPd4DfEx7GPs8IcY8njoLiD4N92iZEZZoMT8P1POblOwshNRx\nv/tMJXqFcezQa4mALSvKAdJw+ya55kGvKRVjPMKJYguegFfiB5h5RH46DRFgeqdX\n/oXyBjrE8X7PYm/lqGdaoLZDG+PZ5BaEG4127kObfM75E5fLcRJ/cDvx0sJe9md/\nLhubmv0oC6kGNflAtzR9Ny172ltEYDtUsu5Me+8AIuTxw7gZ3BuChlX8xOAtgCKJ\nDAUdF22Yv347JfRi86B8MQvmGk1qBGmWjREtpHk974liPAmxzh8ED5YeC2ZSjqoo\nY1YRdQZRqrcDnY6F/3ZBv5yxytrPdCUgSvqxOpW3QgAY41VByNqNN2qVrXembJqv\nbwiXQl13FqXvEM/iLcx73iRa2tDIvSkXeLDtfJaCdxlNZ5+ktknXRSTZigBNDuvF\nPg68mNl802hzH7c0nhsYh3SPCYUr0/i0PYsSBcgxjiY+9i00NBuBZnd5f5P/nnY1\n0ES1DRgN1CjjIlJeHtJgVoK1nJlK23ClgaR4sOSGZmw+DbyLyvIZzP+u7tR0Dpfg\nqAwha0KtkTqzFFhRqo+KjKsCAwEAAQ==\n-----END PUBLIC KEY-----"
+      - DB_NAME=insurance
+      - PORT=3002
+      - MONGO_CONNECTION_STRING=mongodb+srv://bhijack:uH35WXhXHV5CaAkz@personal-0.hsi02.mongodb.net/invoice?authSource=admin&replicaSet=atlas-6c5pxa-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true
+    ports:
+      - 3002:3002
+    networks:
+      - insurance-nw
+networks:
+  insurance-nw:
+# volumes:
+#   mongodbdata:

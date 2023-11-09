@@ -14,7 +14,7 @@ const PORT: any = env.EXPRESS_PORT;
 connectDB();
 app.use(express.json());
 app.use(helmet());
-app.use(cors({ origin: ["http://localhost:3000", "https://car-insurance-tools.web.app"] }));
+app.use(cors({ origin: ["http://localhost:3000", "http://app:3000", "https://car-insurance-tools.web.app"] }));
 
 app.get("/health", (req: Request, res: Response) => {
     res.send({ message: "server running" });

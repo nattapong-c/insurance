@@ -30,8 +30,10 @@
     "eject": "react-scripts eject",
     "env:dev": "node src/scripts/set-environment.js dev",
     "env:prod": "node src/scripts/set-environment.js prod",
+    "env:docker": "node src/scripts/set-environment.js docker",
     "start_dev": "yarn env:dev && yarn start",
     "build_prod": "yarn env:prod && yarn build",
+    "build_docker": "yarn env:docker && yarn build",
     "deploy_firebase": "yarn build_prod && firebase deploy"
   },
   "eslintConfig": {
