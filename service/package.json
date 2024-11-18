@@ -7,7 +7,7 @@
     "yarn": "1.22.x"
   },
   "scripts": {
-    "start": "node ../dist/app.js",
+    "start": "pwd && ls -al && ls ../ && node dist/app.js",
     "dev": "ts-node-dev src/app.ts",
     "build": "npx tsc",
     "build_local": "tsc && cp src/.env build/.env && echo USE_JS=true >> build/.env",
