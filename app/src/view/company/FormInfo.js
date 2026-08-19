@@ -1,119 +1,140 @@
-import { useEffect } from 'react';
-import Proptypes from 'prop-types';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Button, notification } from 'antd';
+import { BankOutlined, NumberOutlined, EnvironmentOutlined, SaveOutlined } from '@ant-design/icons';
 import { useCompanyDispatch, useCompanyState } from '../../hook/useCompany';
 import Loading from '../../component/loading/Loading';
 
-const FormInfo = (props) => {
-    const { info, isUpdate } = props;
-    const [form] = Form.useForm();
-    const { dispatchCreateCompany, dispatchClearCreateCompany, dispatchUpdateCompany, dispatchClearUpdateCompany } = useCompanyDispatch();
-    const { companyCreate, companyUpdate } = useCompanyState();
+const FormInfo = ({ info, isUpdate, onSuccess }) => {
+  const [form] = Form.useForm();
+  const {
+    dispatchCreateCompany,
+    dispatchClearCreateCompany,
+    dispatchUpdateCompany,
+    dispatchClearUpdateCompany
+  } = useCompanyDispatch();
+  const { companyCreate, companyUpdate } = useCompanyState();
 
-    useEffect(() => {
-        dispatchClearCreateCompany();
-        dispatchClearUpdateCompany();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+  useEffect(() => {
+    dispatchClearCreateCompany();
+    dispatchClearUpdateCompany();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    useEffect(() => {
-        if (isUpdate) {
-            form.setFieldsValue({
-                name: info?.name,
-                id_company: info?.id_company,
-                address: info?.address,
-            });
-        } else {
-            form.setFieldsValue({
-                name: null,
-                id_company: null,
-                address: null,
-            });
+  useEffect(() => {
+    if (isUpdate && info) {
+      form.setFieldsValue({
+        name: info.name,
+        id_company: info.id_company,
+        address: info.address
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [info, isUpdate, form]);
+
+  useEffect(() => {
+    if (companyCreate?.done || companyUpdate?.done) {
+      if (companyCreate?.error || companyUpdate?.error) {
+        notification.error({
+          message: 'เกิดข้อผิดพลาด',
+          description: isUpdate ? companyUpdate?.error : companyCreate?.error,
+          placement: 'bottomRight'
+        });
+      } else {
+        if (!isUpdate) {
+          form.resetFields();
         }
+        notification.success({
+          message: isUpdate ? 'อัปเดตข้อมูลบริษัทประกันสำเร็จ' : 'เพิ่มบริษัทประกันสำเร็จ',
+          placement: 'bottomRight'
+        });
+        if (onSuccess) onSuccess();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyCreate?.done, companyUpdate?.done]);
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [info, isUpdate]);
+  const onFinish = (values) => {
+    if (isUpdate) {
+      dispatchUpdateCompany(info?._id, values);
+    } else {
+      dispatchCreateCompany(values);
+    }
+  };
 
-    useEffect(() => {
-        if (companyCreate?.done || companyUpdate?.done) {
-            if (companyCreate?.error || companyUpdate?.error) {
-                notification.error({
-                    message: isUpdate ? companyUpdate?.error : companyCreate?.error,
-                    placement: "bottomRight",
-                    duration: 2.5
-                });
-            } else {
-                if (!isUpdate) {
-                    form.setFieldsValue({
-                        name: null,
-                        id_company: null,
-                        address: null,
-                    });
-                }
-                notification.success({
-                    message: isUpdate ? "Update success" : "Create success",
-                    placement: "bottomRight",
-                    duration: 2.5
-                });
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [companyCreate.done, companyUpdate.done])
+  const isLoading = companyCreate?.loading || companyUpdate?.loading;
 
-    const onFinish = (e) => {
-        if (isUpdate) {
-            dispatchUpdateCompany(info?._id, e);
-        } else {
-            dispatchCreateCompany(e);
-        }
-    };
+  return (
+    <Loading show={isLoading} tip="กำลังบันทึกข้อมูล...">
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={onFinish}
+        requiredMark="optional"
+      >
+        <Form.Item
+          name="id_company"
+          label="เลขประจำตัวผู้เสียภาษีอากร"
+          rules={[{ required: true, message: 'กรุณากรอกเลขประจำตัวผู้เสียภาษี' }]}
+        >
+          <Input
+            prefix={<NumberOutlined style={{ color: '#94A3B8' }} />}
+            placeholder="เช่น 0107537001714"
+            size="large"
+          />
+        </Form.Item>
 
-    return (
-        <>
-            <h4>{isUpdate ? "Update" : "Create"} company</h4>
-            <div>
-                <Loading show={companyCreate?.loading || companyUpdate?.loading}>
-                    <Form form={form} colon={false} onFinish={onFinish}>
-                        <Form.Item
-                            name="id_company"
-                            label="เลขผู้เสียภาษี"
-                            rules={[{ required: true }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            name="name"
-                            label="ชื่อบริษัท"
-                            rules={[{ required: true }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            name="address"
-                            label="ที่อยู่"
-                            rules={[{ required: true }]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Form.Item style={{ float: "right" }}>
-                            <Button type='primary' htmlType='submit' >{isUpdate ? "Update" : "Create"}</Button>
-                        </Form.Item>
-                    </Form>
-                </Loading>
-            </div>
-        </>
-    );
+        <Form.Item
+          name="name"
+          label="ชื่อบริษัทประกันภัย"
+          rules={[{ required: true, message: 'กรุณากรอกชื่อบริษัทประกัน' }]}
+        >
+          <Input
+            prefix={<BankOutlined style={{ color: '#94A3B8' }} />}
+            placeholder="เช่น บมจ. วิริยะประกันภัย"
+            size="large"
+          />
+        </Form.Item>
 
+        <Form.Item
+          name="address"
+          label="ที่อยู่สำนักงานใหญ่ / สาขา"
+          rules={[{ required: true, message: 'กรุณากรอกที่อยู่บริษัท' }]}
+        >
+          <Input.TextArea
+            rows={4}
+            placeholder="ระบุที่อยู่ของบริษัทประกันภัย..."
+            size="large"
+          />
+        </Form.Item>
+
+        <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            icon={<SaveOutlined />}
+            size="large"
+            style={{ minWidth: '130px', borderRadius: '8px' }}
+          >
+            {isUpdate ? 'บันทึกการแก้ไข' : 'เพิ่มบริษัท'}
+          </Button>
+        </div>
+      </Form>
+    </Loading>
+  );
 };
 
 FormInfo.propTypes = {
-    info: Proptypes.object,
-    isUpdate: Proptypes.bool
+  info: PropTypes.object,
+  isUpdate: PropTypes.bool,
+  onSuccess: PropTypes.func
 };
 
 FormInfo.defaultProps = {
-    info: null,
-    isUpdate: false
+  info: null,
+  isUpdate: false,
+  onSuccess: null
 };
 
 export default FormInfo;
