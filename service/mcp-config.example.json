@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "insurance-service": {
+      "command": "node",
+      "args": [
+        "/Users/Boss/Desktop/workspace-ai/insurance/service/dist/mcp/index.js"
+      ],
+      "env": {
+        "MONGO_CONNECTION_STRING": "mongodb://localhost:27017",
+        "DB_NAME": "insurance"
+      }
+    }
+  }
+}
