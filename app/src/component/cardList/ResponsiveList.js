@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Table, Pagination, Checkbox } from 'antd';
+import { Table, Pagination } from 'antd';
 import { useResponsive } from '../../hook/useResponsive';
 import EmptyState from '../empty/EmptyState';
 

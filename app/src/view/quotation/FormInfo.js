@@ -9,15 +9,12 @@ import {
   Select,
   Card,
   Row,
-  Col,
-  Space
+  Col
 } from 'antd';
 import {
   PlusOutlined,
   DeleteOutlined,
-  SaveOutlined,
-  CarOutlined,
-  BankOutlined
+  SaveOutlined
 } from '@ant-design/icons';
 import { useQuotationDispatch, useQuotationState } from '../../hook/useQuotation';
 import { useCompanyState } from '../../hook/useCompany';

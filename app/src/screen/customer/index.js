@@ -4,8 +4,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
-  SearchOutlined,
-  UserOutlined
+  SearchOutlined
 } from '@ant-design/icons';
 import _ from 'lodash';
 import Wrapper from '../../component/wrapper/Wrapper';

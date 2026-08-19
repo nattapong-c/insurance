@@ -8,6 +8,8 @@ const config = {
     projectId: ENV.FIREBASE.PROJECT_ID
 };
 
-const app = firebase.getApps().length <= 0 && firebase.initializeApp(config);
+if (firebase.getApps().length <= 0) {
+    firebase.initializeApp(config);
+}
 
 export { auth };

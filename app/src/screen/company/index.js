@@ -5,7 +5,6 @@ import {
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
-  BankOutlined,
   EnvironmentOutlined
 } from '@ant-design/icons';
 import _ from 'lodash';

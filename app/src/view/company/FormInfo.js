@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Button, notification } from 'antd';
-import { BankOutlined, NumberOutlined, EnvironmentOutlined, SaveOutlined } from '@ant-design/icons';
+import { BankOutlined, NumberOutlined, SaveOutlined } from '@ant-design/icons';
 import { useCompanyDispatch, useCompanyState } from '../../hook/useCompany';
 import Loading from '../../component/loading/Loading';
 

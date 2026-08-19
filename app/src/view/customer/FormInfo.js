@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Button, notification } from 'antd';
-import { UserOutlined, IdcardOutlined, SaveOutlined } from '@ant-design/icons';
+import { IdcardOutlined, SaveOutlined } from '@ant-design/icons';
 import { useCustomerDispatch, useCustomerState } from '../../hook/useCustomer';
 import Loading from '../../component/loading/Loading';
 
