@@ -19,6 +19,7 @@ const PrivateRoutes = ({ children }) => {
         const token = getToken();
         if (!token) navigate('/');
         dispatchGetCurrent();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -29,6 +30,7 @@ const PrivateRoutes = ({ children }) => {
             }
             dispatchClearCurrentDone();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authenCurrent.done]);
 
     return <>{children}</>;

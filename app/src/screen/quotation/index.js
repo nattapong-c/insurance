@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button, Drawer, Modal, Tooltip, Checkbox } from 'antd';
+import { Input, Button, Drawer, Modal, Tooltip, Checkbox, Tag } from 'antd';
 import {
   PlusOutlined,
   DeleteOutlined,
   EditOutlined,
   SearchOutlined,
-  FilePdfOutlined,
-  BankOutlined
+  FilePdfOutlined
 } from '@ant-design/icons';
 import _ from 'lodash';
 import Wrapper from '../../component/wrapper/Wrapper';
@@ -18,9 +17,9 @@ import ResponsiveList, {
   CardBody,
   CardFooter
 } from '../../component/cardList/ResponsiveList';
-import { PageHeader, InvoiceBadge, PlateTag } from './styled-component';
-import FormInfo from '../../view/invoice/FormInfo';
-import { useInvoiceDispatch, useInvoiceState } from '../../hook/useInvoice';
+import { PageHeader, DateBadge } from './styled-component';
+import FormInfo from '../../view/quotation/FormInfo';
+import { useQuotationDispatch, useQuotationState } from '../../hook/useQuotation';
 import { useCompanyDispatch } from '../../hook/useCompany';
 import { useCustomerDispatch } from '../../hook/useCustomer';
 import Loading from '../../component/loading/Loading';
@@ -28,12 +27,7 @@ import { useResponsive } from '../../hook/useResponsive';
 
 const SIZE_DATA = 50;
 
-const formatText = (text) => {
-  if (!text) return '-';
-  return text.replace(/<br\s*\/?>/gi, ' ');
-};
-
-const Invoice = () => {
+const Quotation = () => {
   const [data, setData] = useState(null);
   const [openForm, setOpenForm] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -41,34 +35,60 @@ const Invoice = () => {
   const [filter, setFilter] = useState('');
   const { isMobile } = useResponsive();
 
-  const { dispatchGetInvoice, dispatchDeleteInvoice, dispatchExportInvoice } =
-    useInvoiceDispatch();
-  const { invoiceCreate, invoiceDelete, invoiceList, invoiceExport } =
-    useInvoiceState();
+  const {
+    dispatchGetQuotation,
+    dispatchExportQuotation,
+    dispatchDeleteQuotation
+  } = useQuotationDispatch();
+  const {
+    quotationList,
+    quotationCreate,
+    quotationExport,
+    quotationUpdate,
+    quotationDelete
+  } = useQuotationState();
   const { dispatchGetCompany } = useCompanyDispatch();
   const { dispatchGetCustomer } = useCustomerDispatch();
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '-';
+    try {
+      return new Intl.DateTimeFormat('th-TH', {
+        dateStyle: 'long'
+      }).format(new Date(dateStr));
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
   const columns = [
     {
-      title: 'เลขที่ใบวางบิล',
-      dataIndex: 'invoice_no',
-      key: 'invoice_no',
+      title: 'วันที่ออกเอกสาร',
+      dataIndex: 'issue_date',
+      key: 'issue_date',
       fixed: 'left',
-      width: 150,
-      render: (text) => <InvoiceBadge>{text}</InvoiceBadge>
+      width: 190,
+      render: (text) => <DateBadge>{formatDate(text)}</DateBadge>
     },
     {
-      title: 'ทะเบียนรถ',
-      dataIndex: 'plate_no',
-      key: 'plate_no',
-      width: 140,
-      render: (text) => <PlateTag>{text}</PlateTag>
-    },
-    {
-      title: 'บริษัทประกันภัย',
-      dataIndex: 'insurance_receiver',
-      key: 'insurance_receiver',
-      render: (text) => <span>{formatText(text)}</span>
+      title: 'รายการรถและบริษัทประกัน',
+      dataIndex: 'customers',
+      key: 'customers',
+      render: (customers) => (
+        <span style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+          <Tag color="default" style={{ borderRadius: '4px', fontWeight: 500 }}>
+            {customers?.length || 0} รายการ
+          </Tag>
+          {customers?.slice(0, 3).map((c, i) => (
+            <Tag key={i} style={{ borderRadius: '4px' }}>
+              {c.plate_number || c.company_name}
+            </Tag>
+          ))}
+          {customers?.length > 3 && (
+            <span style={{ fontSize: '12px', opacity: 0.6 }}>+{customers.length - 3}</span>
+          )}
+        </span>
+      )
     },
     {
       title: 'จัดการ',
@@ -81,26 +101,29 @@ const Invoice = () => {
           type="text"
           size="small"
           icon={<EditOutlined style={{ fontSize: '15px' }} />}
-          onClick={() => selectData(invoiceList.list, text)}
+          onClick={() => selectData(quotationList.list, text)}
         />
       )
     },
     {
       title: 'PDF',
       key: 'export',
-      dataIndex: 'invoice_no',
+      dataIndex: '_id',
       width: 70,
       align: 'center',
-      render: (text) => (
-        <Tooltip title="ส่งออก / พิมพ์ PDF">
-          <Button
-            type="text"
-            size="small"
-            icon={<FilePdfOutlined style={{ color: '#EF4444', fontSize: '16px' }} />}
-            onClick={() => dispatchExportInvoice(text)}
-          />
-        </Tooltip>
-      )
+      render: (text) => {
+        const item = _.find(quotationList.list, { _id: text });
+        return (
+          <Tooltip title="ส่งออก / พิมพ์ PDF">
+            <Button
+              type="text"
+              size="small"
+              icon={<FilePdfOutlined style={{ color: '#EF4444', fontSize: '16px' }} />}
+              onClick={() => dispatchExportQuotation(text, item)}
+            />
+          </Tooltip>
+        );
+      }
     }
   ];
 
@@ -121,54 +144,51 @@ const Invoice = () => {
   const handleDeleteSelected = () => {
     if (!selectedRow.length) return;
     Modal.confirm({
-      title: 'ยืนยันการลบข้อมูลใบวางบิล',
-      content: `ต้องการลบใบวางบิลที่เลือกจำนวน ${selectedRow.length} รายการ หรือไม่?`,
+      title: 'ยืนยันการลบข้อมูลใบเสนอราคา',
+      content: `ต้องการลบใบเสนอราคาที่เลือกจำนวน ${selectedRow.length} รายการ หรือไม่?`,
       okText: 'ลบข้อมูล',
       okType: 'danger',
       cancelText: 'ยกเลิก',
       onOk() {
         const idList = selectedRow.map((i) => `id_list=${i}`).join('&');
-        dispatchDeleteInvoice(idList);
+        dispatchDeleteQuotation(idList);
       }
     });
   };
 
-  const onSearch = () => {
-    let params = `page=1&size=${SIZE_DATA}`;
-    if (filter) params += `&plate_number=${encodeURIComponent(filter.trim())}`;
-    dispatchGetInvoice(params);
-  };
-
   const onTableChange = (pagination) => {
-    let params = `page=${pagination.current}&size=${SIZE_DATA}`;
-    if (filter) params += `&plate_number=${encodeURIComponent(filter.trim())}`;
-    dispatchGetInvoice(params);
+    dispatchGetQuotation(`page=${pagination.current}&size=${SIZE_DATA}`);
   };
 
   useEffect(() => {
-    dispatchGetInvoice(`page=1&size=${SIZE_DATA}`);
+    dispatchGetQuotation(`page=1&size=${SIZE_DATA}`);
     dispatchGetCompany(`page=1&size=100`);
     dispatchGetCustomer(`page=1&size=100`);
-    if (invoiceDelete?.done) {
+    if (quotationDelete?.done) {
       setSelectedRow([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [invoiceCreate?.done, invoiceDelete?.done]);
+  }, [quotationCreate?.done, quotationUpdate?.done, quotationDelete?.done]);
 
   const renderMobileCard = (item, { isSelected, toggleSelect }) => (
     <>
       <CardHeader>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Checkbox checked={isSelected} onChange={toggleSelect} />
-          <InvoiceBadge>{item.invoice_no}</InvoiceBadge>
+          <DateBadge>{formatDate(item.issue_date)}</DateBadge>
         </div>
-        <PlateTag>{item.plate_no}</PlateTag>
+        <Tag color="default" style={{ borderRadius: '4px' }}>
+          {item.customers?.length || 0} รายการ
+        </Tag>
       </CardHeader>
 
       <CardBody>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <BankOutlined style={{ opacity: 0.7 }} />
-          <span>{formatText(item.insurance_receiver)}</span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          {item.customers?.map((c, i) => (
+            <Tag key={i} style={{ borderRadius: '4px' }}>
+              {c.plate_number || c.company_name}
+            </Tag>
+          ))}
         </div>
       </CardBody>
 
@@ -177,7 +197,7 @@ const Invoice = () => {
           size="small"
           type="default"
           icon={<FilePdfOutlined style={{ color: '#EF4444' }} />}
-          onClick={() => dispatchExportInvoice(item.invoice_no)}
+          onClick={() => dispatchExportQuotation(item._id, item)}
         >
           พิมพ์ PDF
         </Button>
@@ -185,7 +205,7 @@ const Invoice = () => {
           size="small"
           type="text"
           icon={<EditOutlined />}
-          onClick={() => selectData(invoiceList.list, item._id)}
+          onClick={() => selectData(quotationList.list, item._id)}
         >
           แก้ไข
         </Button>
@@ -194,15 +214,15 @@ const Invoice = () => {
   );
 
   const isLoading =
-    invoiceList?.loading || invoiceDelete?.loading || invoiceExport?.loading;
+    quotationList?.loading || quotationExport?.loading || quotationDelete?.loading;
 
   return (
-    <Wrapper page="invoice">
+    <Wrapper page="quotation">
       <Loading show={isLoading} tip="กำลังดำเนินการ...">
         <PageHeader>
           <div className="header-left">
-            <h1>ใบวางบิล</h1>
-            <p>รายการใบวางบิล ค่าเบี้ยประกันภัย พ.ร.บ. และภาษี</p>
+            <h1>ใบเสนอราคา</h1>
+            <p>รายการข้อเสนอเบี้ยประกันภัย พ.ร.บ. และแผนคุ้มครองสำหรับลูกค้า</p>
           </div>
         </PageHeader>
 
@@ -210,19 +230,15 @@ const Invoice = () => {
           <TableToolbar>
             <div className="toolbar-left">
               <Input
-                placeholder="ค้นหาด้วยเลขทะเบียนรถ..."
+                placeholder="ค้นหารายการ..."
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                onPressEnter={onSearch}
                 allowClear
                 prefix={<SearchOutlined style={{ color: '#A1A1AA' }} />}
-                style={{ maxWidth: '320px' }}
+                style={{ maxWidth: '280px' }}
               />
-              <Button type="default" onClick={onSearch}>
-                ค้นหา
-              </Button>
-              {invoiceList.totalItem > 0 && (
-                <ItemCountBadge>{invoiceList.totalItem} ฉบับ</ItemCountBadge>
+              {quotationList.totalItem > 0 && (
+                <ItemCountBadge>{quotationList.totalItem} รายการ</ItemCountBadge>
               )}
             </div>
 
@@ -237,14 +253,14 @@ const Invoice = () => {
                 </Button>
               )}
               <Button type="primary" icon={<PlusOutlined />} onClick={createData}>
-                ออกใบวางบิล
+                ออกใบเสนอราคา
               </Button>
             </div>
           </TableToolbar>
 
           <ResponsiveList
             columns={columns}
-            dataSource={invoiceList.list}
+            dataSource={quotationList.list}
             rowKey="_id"
             rowSelection={{
               selectedRowKeys: selectedRow,
@@ -253,22 +269,22 @@ const Invoice = () => {
             }}
             pagination={{
               defaultPageSize: SIZE_DATA,
-              total: invoiceList.totalItem
+              total: quotationList.totalItem
             }}
             onChange={onTableChange}
             renderMobileCard={renderMobileCard}
-            emptyTitle="ยังไม่มีข้อมูลใบวางบิล"
-            emptyDescription="ออกใบวางบิลใหม่พร้อมระบบคำนวณเบี้ยประกัน ภาษี และส่งออก PDF"
-            emptyActionText="สร้างใบวางบิลแรก"
+            emptyTitle="ยังไม่มีข้อมูลใบเสนอราคา"
+            emptyDescription="ออกใบเสนอราคาใหม่พร้อมส่งออกไฟล์ PDF ได้ทันที"
+            emptyActionText="สร้างใบเสนอราคาแรก"
             onEmptyAction={createData}
           />
         </TableCardContainer>
 
         <Drawer
-          title={isUpdate ? 'แก้ไขใบวางบิล' : 'สร้างใบวางบิลใหม่'}
+          title={isUpdate ? 'แก้ไขใบเสนอราคา' : 'สร้างใบเสนอราคาใหม่'}
           placement={isMobile ? 'bottom' : 'right'}
           height={isMobile ? '90vh' : undefined}
-          width={isMobile ? '100%' : 680}
+          width={isMobile ? '100%' : 720}
           onClose={() => setOpenForm(false)}
           visible={openForm}
           destroyOnClose
@@ -284,4 +300,4 @@ const Invoice = () => {
   );
 };
 
-export default Invoice;
+export default Quotation;
