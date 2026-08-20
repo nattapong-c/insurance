@@ -30,7 +30,7 @@ const SIZE_DATA = 50;
 
 const formatText = (text) => {
   if (!text) return '-';
-  return text.replace(/<br\s*[\/]?>/gi, ' ');
+  return text.replace(/<br\s*\/?>/gi, ' ');
 };
 
 const Invoice = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Empty } from 'antd';
+import { Button } from 'antd';
 import { PlusOutlined, InboxOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 

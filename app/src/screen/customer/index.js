@@ -25,7 +25,7 @@ const SIZE_DATA = 50;
 
 const splitNameAndAddress = (rawText) => {
   if (!rawText) return { name: '-', address: '' };
-  const parts = rawText.split(/<br\s*[\/]?>/i);
+  const parts = rawText.split(/<br\s*\/?>/i);
   return {
     name: parts[0] ? parts[0].trim() : '-',
     address: parts.slice(1).join(' ').trim()
