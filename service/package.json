@@ -12,8 +12,6 @@
     "build": "tsc",
     "build_local": "tsc && cp src/.env build/.env && echo USE_JS=true >> build/.env",
     "index_db": "ts-node src/database/index_db.ts",
-    "mcp": "ts-node --transpile-only src/mcp/index.ts",
-    "mcp:prod": "node dist/mcp/index.js",
     "test": "jest"
   },
   "devDependencies": {
@@ -33,7 +31,6 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
@@ -45,7 +42,6 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mongoose": "^6.2.4",
-    "mustache": "^4.2.0",
-    "zod": "^3.23.8"
+    "mustache": "^4.2.0"
   }
 }
