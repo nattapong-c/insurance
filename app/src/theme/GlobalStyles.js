@@ -168,6 +168,27 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
+  /* Dashed Button */
+  .ant-btn-dashed {
+    background-color: transparent !important;
+    border: 1px dashed ${({ theme }) => theme.border} !important;
+    color: ${({ theme }) => theme.textPrimary} !important;
+
+    > span, .anticon {
+      color: ${({ theme }) => theme.textPrimary} !important;
+    }
+
+    &:hover, &:focus {
+      background-color: ${({ theme }) => theme.surfaceHover} !important;
+      border-color: ${({ theme }) => (theme.mode === 'dark' ? '#52525B' : '#71717A')} !important;
+      color: ${({ theme }) => theme.textPrimary} !important;
+
+      > span, .anticon {
+        color: ${({ theme }) => theme.textPrimary} !important;
+      }
+    }
+  }
+
   /* =========================================================
      Card & Table Styling
      ========================================================= */
@@ -339,6 +360,21 @@ export const GlobalStyles = createGlobalStyle`
     font-weight: 500;
     font-size: 13px;
     letter-spacing: -0.01em;
+  }
+
+  .ant-form-item-optional {
+    color: ${({ theme }) => theme.textSecondary} !important;
+    font-weight: 400;
+  }
+
+  .ant-form-item-explain,
+  .ant-form-item-extra {
+    color: ${({ theme }) => theme.textSecondary} !important;
+    font-size: 12px;
+  }
+
+  .ant-picker-suffix {
+    color: ${({ theme }) => theme.textSecondary} !important;
   }
 
   /* Drawer & Modal */
