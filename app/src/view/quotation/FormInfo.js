@@ -26,7 +26,7 @@ import styled from 'styled-components';
 
 const ItemCard = styled(Card)`
   margin-bottom: 16px;
-  background: ${({ theme }) => (theme.mode === 'dark' ? '#273549' : '#F8FAFC')} !important;
+  background: ${({ theme }) => (theme.mode === 'dark' ? '#1C1C20' : '#F8FAFC')} !important;
   border: 1px solid ${({ theme }) => theme.border} !important;
   border-radius: 10px !important;
 
@@ -39,6 +39,11 @@ const ItemCard = styled(Card)`
     border-bottom: 1px solid ${({ theme }) => theme.border};
     font-weight: 600;
     font-size: 14px;
+    color: ${({ theme }) => theme.textPrimary} !important;
+
+    span {
+      color: ${({ theme }) => theme.textPrimary} !important;
+    }
   }
 `;
 
