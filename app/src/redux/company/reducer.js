@@ -16,7 +16,7 @@ export const createCompanyReducer = (state = initCompanyInfo, { type, payload })
         case TYPE.COMPANY_CREATE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.COMPANY_CREATE_CLEAR:
-            return state;
+            return initCompanyInfo;
         default:
             return state;
     }
@@ -59,7 +59,7 @@ export const deleteCompanyReducer = (state = initDeleteCompanyList, { type, payl
         case TYPE.COMPANY_DELETE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.COMPANY_DELETE_CLEAR:
-            return state
+            return initDeleteCompanyList;
         default:
             return state;
     }
@@ -81,7 +81,7 @@ export const updateCompanyReducer = (state = initUpdateCompany, { type, payload 
         case TYPE.COMPANY_UPDATE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.COMPANY_UPDATE_CLEAR:
-            return state
+            return initUpdateCompany;
         default:
             return state;
     }

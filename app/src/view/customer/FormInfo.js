@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Button, notification } from 'antd';
 import { IdcardOutlined, SaveOutlined } from '@ant-design/icons';
@@ -14,6 +14,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
     dispatchClearUpdateCustomer
   } = useCustomerDispatch();
   const { customerCreate, customerUpdate } = useCustomerState();
+  const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
     dispatchClearCreateCustomer();
@@ -33,13 +34,16 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [info, isUpdate, form]);
 
   useEffect(() => {
-    if (customerCreate?.done || customerUpdate?.done) {
+    if (hasSubmittedRef.current && (customerCreate?.done || customerUpdate?.done)) {
+      hasSubmittedRef.current = false;
       if (customerCreate?.error || customerUpdate?.error) {
         notification.error({
           message: 'เกิดข้อผิดพลาด',
           description: isUpdate ? customerUpdate?.error : customerCreate?.error,
           placement: 'bottomRight'
         });
+        dispatchClearCreateCustomer();
+        dispatchClearUpdateCustomer();
       } else {
         if (!isUpdate) {
           form.resetFields();
@@ -48,6 +52,8 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
           message: isUpdate ? 'อัปเดตข้อมูลลูกค้าสำเร็จ' : 'เพิ่มข้อมูลลูกค้าสำเร็จ',
           placement: 'bottomRight'
         });
+        dispatchClearCreateCustomer();
+        dispatchClearUpdateCustomer();
         if (onSuccess) onSuccess();
       }
     }
@@ -55,6 +61,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [customerCreate?.done, customerUpdate?.done]);
 
   const onFinish = (values) => {
+    hasSubmittedRef.current = true;
     if (isUpdate) {
       dispatchUpdateCustomer(info?._id, values);
     } else {

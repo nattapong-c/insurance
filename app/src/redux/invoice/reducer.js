@@ -16,7 +16,7 @@ export const createInvoiceReducer = (state = initInfo, { type, payload }) => {
         case TYPE.INVOICE_CREATE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.INVOICE_CREATE_CLEAR:
-            return state;
+            return initInfo;
         default:
             return state;
     }
@@ -58,7 +58,7 @@ export const deleteInvoiceReducer = (state = initDeleteList, { type, payload }) 
         case TYPE.INVOICE_DELETE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.INVOICE_DELETE_CLEAR:
-            return state
+            return initDeleteList;
         default:
             return state;
     }

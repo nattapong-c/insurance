@@ -16,7 +16,7 @@ export const createQuotationReducer = (state = initInfo, { type, payload }) => {
         case TYPE.QUOTATION_CREATE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.QUOTATION_CREATE_CLEAR:
-            return state;
+            return initInfo;
         default:
             return state;
     }
@@ -75,7 +75,7 @@ export const updateQuotationReducer = (state = initUpdate, {type, payload}) => {
         case TYPE.QUOTATION_UPDATE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.QUOTATION_UPDATE_CLEAR:
-            return state;
+            return initUpdate;
         default:
             return state;
     }
@@ -96,7 +96,7 @@ export const deleteQuotationReducer = (state = initDelete, {type, payload}) => {
         case TYPE.QUOTATION_DELETE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.QUOTATION_DELETE_CLEAR:
-            return state;
+            return initDelete;
         default:
             return state;
     }

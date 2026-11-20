@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form,
@@ -50,6 +50,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   const [netAmount, setNetAmount] = useState(0);
   const [actAmount, setActAmount] = useState(0);
   const [stampAmount, setStampAmount] = useState(0);
+  const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
     dispatchClearCreateInvoice();
@@ -81,13 +82,15 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [info, isUpdate, form, companyList.companyList]);
 
   useEffect(() => {
-    if (invoiceCreate?.done) {
+    if (hasSubmittedRef.current && invoiceCreate?.done) {
+      hasSubmittedRef.current = false;
       if (invoiceCreate?.error) {
         notification.error({
           message: 'เกิดข้อผิดพลาด',
           description: invoiceCreate?.error,
           placement: 'bottomRight'
         });
+        dispatchClearCreateInvoice();
       } else {
         if (!isUpdate) {
           form.setFieldsValue(defaultFields);
@@ -99,6 +102,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
           message: isUpdate ? 'อัปเดตใบวางบิลสำเร็จ' : 'สร้างใบวางบิลสำเร็จ',
           placement: 'bottomRight'
         });
+        dispatchClearCreateInvoice();
         if (onSuccess) onSuccess();
       }
     }
@@ -106,6 +110,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [invoiceCreate?.done]);
 
   const onFinish = (values) => {
+    hasSubmittedRef.current = true;
     const isCompanyVal = Array.isArray(values.is_company)
       ? values.is_company.length > 0
       : Boolean(values.is_company);
