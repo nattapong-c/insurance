@@ -5,6 +5,37 @@ import CompanySchema from "../../schema/Company";
 import { PipelineStage, ObjectId } from "mongoose";
 import { formatNumber } from "../../utils/number";
 
+export interface InvoiceAmountBreakdown {
+    total_amount_1: number;
+    vat_7: number;
+    total_amount_2: number;
+    vat_at_paid: number;
+    total_amount_3: number;
+}
+
+/**
+ * Computes invoice subtotals, 7% VAT, and 1% withholding tax (if company).
+ */
+export const calculateInvoiceAmounts = (
+    amount: number,
+    amountAct: number | undefined,
+    amountStamp: number,
+    isCompany: boolean
+): InvoiceAmountBreakdown => {
+    const totalAmount1 = amountAct ? amount + amountAct + amountStamp : amount + amountStamp;
+    const vat7 = (totalAmount1 * 7) / 100;
+    const totalAmount2 = totalAmount1 + vat7;
+    const vatAtPaid = isCompany ? totalAmount1 / 100 : 0;
+    const totalAmount3 = isCompany ? totalAmount2 - vatAtPaid : totalAmount2;
+    return {
+        total_amount_1: totalAmount1,
+        vat_7: vat7,
+        total_amount_2: totalAmount2,
+        vat_at_paid: vatAtPaid,
+        total_amount_3: totalAmount3
+    };
+};
+
 export interface InvoiceQuery {
     plate_number?: string,
     page?: string,
@@ -212,11 +243,7 @@ export class Invoice {
         var company = await CompanySchema.findOne({ id_company: insurance_receiver_id });
         if (!company) throw new Error400("company not found");
 
-        let totalAmount1 = amount_act ? amount + amount_act + amount_stamp : amount + amount_stamp;
-        let vat7 = (totalAmount1 * 7) / 100;
-        let totalAmount2 = totalAmount1 + vat7;
-        let vatAtPaid = is_company ? totalAmount1 / 100 : 0;
-        let totalAmount3 = is_company ? totalAmount2 - vatAtPaid : totalAmount2;
+        const amounts = calculateInvoiceAmounts(amount, amount_act, amount_stamp, Boolean(is_company));
 
         var invoiceData = new Invoice(
             customer.name,
@@ -231,13 +258,13 @@ export class Invoice {
             amount,
             amount_act,
             amount_stamp,
-            vat7,
+            amounts.vat_7,
             start_date,
             end_date,
-            vatAtPaid,
-            totalAmount1,
-            totalAmount2,
-            totalAmount3,
+            amounts.vat_at_paid,
+            amounts.total_amount_1,
+            amounts.total_amount_2,
+            amounts.total_amount_3,
             company.address,
             company.id_company
         );

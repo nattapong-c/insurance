@@ -4,3 +4,6 @@
 # AI Agent customizations
 .agent/
 .agents/
+
+# Local environment secrets
+.env

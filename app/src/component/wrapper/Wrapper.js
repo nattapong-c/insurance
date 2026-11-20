@@ -17,6 +17,7 @@ import {
 import { useTheme } from '../../theme/ThemeContext';
 import { deleteToken } from '../../utils/authen';
 import { useAuthenState } from '../../hook/useAuthen';
+import AiChatWidget from '../aiChat/AiChatWidget';
 import {
   LayoutContainer,
   DesktopSidebar,
@@ -256,6 +257,9 @@ const Wrapper = ({ children, page }) => {
             </BottomNavItem>
           ))}
         </MobileBottomNav>
+
+        {/* Global Floating AI Assistant */}
+        <AiChatWidget />
       </MainWrapper>
     </LayoutContainer>
   );
