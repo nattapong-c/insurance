@@ -9,5 +9,6 @@ export default {
     DB_NAME: process.env.DB_NAME ?? "test",
     USE_JS: process.env.USE_JS ?? null,
     JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY ?? '',
-    JWT_PUBLIC_KEY: process.env.JWT_PUBLIC_KEY ?? ''
+    JWT_PUBLIC_KEY: process.env.JWT_PUBLIC_KEY ?? '',
+    PUPPETEER_EXECUTABLE_PATH: process.env.PUPPETEER_EXECUTABLE_PATH ?? ''
 };
