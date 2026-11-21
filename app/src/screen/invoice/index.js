@@ -13,7 +13,9 @@ import Wrapper from '../../component/wrapper/Wrapper';
 import ResponsiveList, {
   TableCardContainer,
   TableToolbar,
+  SelectionBar,
   ItemCountBadge,
+  RowActionGroup,
   CardHeader,
   CardBody,
   CardFooter
@@ -73,33 +75,36 @@ const Invoice = () => {
     {
       title: 'จัดการ',
       key: 'actions',
-      dataIndex: '_id',
-      width: 70,
-      align: 'center',
-      render: (text) => (
-        <Button
-          type="text"
-          size="small"
-          icon={<EditOutlined style={{ fontSize: '15px' }} />}
-          onClick={() => selectData(invoiceList.list, text)}
-        />
-      )
-    },
-    {
-      title: 'PDF',
-      key: 'export',
-      dataIndex: 'invoice_no',
-      width: 70,
-      align: 'center',
-      render: (text) => (
-        <Tooltip title="ส่งออก / พิมพ์ PDF">
-          <Button
-            type="text"
-            size="small"
-            icon={<FilePdfOutlined style={{ color: '#EF4444', fontSize: '16px' }} />}
-            onClick={() => dispatchExportInvoice(text)}
-          />
-        </Tooltip>
+      width: 132,
+      align: 'right',
+      render: (_, record) => (
+        <RowActionGroup>
+          <Tooltip title="ส่งออก / พิมพ์ PDF">
+            <Button
+              type="text"
+              size="small"
+              icon={<FilePdfOutlined style={{ color: '#EF4444', fontSize: '15px' }} />}
+              onClick={() => dispatchExportInvoice(record.invoice_no)}
+            />
+          </Tooltip>
+          <Tooltip title="แก้ไข">
+            <Button
+              type="text"
+              size="small"
+              icon={<EditOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => selectData(invoiceList.list, record._id)}
+            />
+          </Tooltip>
+          <Tooltip title="ลบ">
+            <Button
+              type="text"
+              size="small"
+              danger
+              icon={<DeleteOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => handleDeleteOne(record)}
+            />
+          </Tooltip>
+        </RowActionGroup>
       )
     }
   ];
@@ -116,6 +121,19 @@ const Invoice = () => {
     setData(null);
     setOpenForm(true);
     setIsUpdate(false);
+  };
+
+  const handleDeleteOne = (record) => {
+    Modal.confirm({
+      title: 'ยืนยันการลบใบวางบิล',
+      content: `ต้องการลบใบวางบิลเลขที่ ${record.invoice_no} (${record.plate_no || '-'}) หรือไม่?`,
+      okText: 'ลบข้อมูล',
+      okType: 'danger',
+      cancelText: 'ยกเลิก',
+      onOk() {
+        dispatchDeleteInvoice(`id_list=${record._id}`);
+      }
+    });
   };
 
   const handleDeleteSelected = () => {
@@ -179,16 +197,25 @@ const Invoice = () => {
           icon={<FilePdfOutlined style={{ color: '#EF4444' }} />}
           onClick={() => dispatchExportInvoice(item.invoice_no)}
         >
-          พิมพ์ PDF
+          PDF
         </Button>
-        <Button
-          size="small"
-          type="text"
-          icon={<EditOutlined />}
-          onClick={() => selectData(invoiceList.list, item._id)}
-        >
-          แก้ไข
-        </Button>
+        <RowActionGroup>
+          <Button
+            size="small"
+            type="text"
+            icon={<EditOutlined />}
+            onClick={() => selectData(invoiceList.list, item._id)}
+          >
+            แก้ไข
+          </Button>
+          <Button
+            size="small"
+            type="text"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDeleteOne(item)}
+          />
+        </RowActionGroup>
       </CardFooter>
     </>
   );
@@ -227,20 +254,31 @@ const Invoice = () => {
             </div>
 
             <div className="toolbar-right">
-              {selectedRow.length > 0 && (
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={handleDeleteSelected}
-                >
-                  ลบ ({selectedRow.length})
-                </Button>
-              )}
               <Button type="primary" icon={<PlusOutlined />} onClick={createData}>
                 ออกใบวางบิล
               </Button>
             </div>
           </TableToolbar>
+
+          {selectedRow.length > 0 && (
+            <SelectionBar>
+              <span>เลือกอยู่ {selectedRow.length} รายการ</span>
+              <div className="sel-actions">
+                <Button size="small" type="text" onClick={() => setSelectedRow([])}>
+                  ยกเลิกการเลือก
+                </Button>
+                <Button
+                  size="small"
+                  danger
+                  type="primary"
+                  icon={<DeleteOutlined />}
+                  onClick={handleDeleteSelected}
+                >
+                  ลบที่เลือก ({selectedRow.length})
+                </Button>
+              </div>
+            </SelectionBar>
+          )}
 
           <ResponsiveList
             columns={columns}

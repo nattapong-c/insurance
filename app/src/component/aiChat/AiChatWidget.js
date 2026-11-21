@@ -43,9 +43,14 @@ const QUICK_PROMPTS = [
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 
-const AiChatWidget = () => {
+const AiChatWidget = ({ open: controlledOpen, onOpenChange, hideFloatingButton = false }) => {
   const { isMobile } = useResponsive();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = typeof controlledOpen === 'boolean' ? controlledOpen : internalOpen;
+  const setOpen = (next) => {
+    if (onOpenChange) onOpenChange(next);
+    if (typeof controlledOpen !== 'boolean') setInternalOpen(next);
+  };
   const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [inputText, setInputText] = useState('');
   const [pendingFiles, setPendingFiles] = useState([]);
@@ -53,6 +58,18 @@ const AiChatWidget = () => {
 
   const fileInputRef = useRef(null);
   const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const handleOpenEvent = (e) => {
+      setOpen(true);
+      if (e?.detail?.prompt) {
+        setInputText(e.detail.prompt);
+      }
+    };
+    window.addEventListener('open-ai-copilot', handleOpenEvent);
+    return () => window.removeEventListener('open-ai-copilot', handleOpenEvent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -199,10 +216,12 @@ const AiChatWidget = () => {
 
   return (
     <>
-      <FloatingAiButton type="button" onClick={() => setOpen(true)} aria-label="เปิดผู้ช่วย AI">
-        <RobotOutlined style={{ fontSize: 18 }} />
-        {!isMobile && <span>AI ผู้ช่วย</span>}
-      </FloatingAiButton>
+      {!hideFloatingButton && (
+        <FloatingAiButton type="button" onClick={() => setOpen(true)} aria-label="เปิดผู้ช่วย AI">
+          <RobotOutlined style={{ fontSize: 18 }} />
+          {!isMobile && <span>AI ผู้ช่วย</span>}
+        </FloatingAiButton>
+      )}
 
       <Drawer
         title={
