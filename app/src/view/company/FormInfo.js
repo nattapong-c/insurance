@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Button, notification } from 'antd';
 import { BankOutlined, NumberOutlined, SaveOutlined } from '@ant-design/icons';
@@ -14,6 +14,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
     dispatchClearUpdateCompany
   } = useCompanyDispatch();
   const { companyCreate, companyUpdate } = useCompanyState();
+  const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
     dispatchClearCreateCompany();
@@ -34,13 +35,16 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [info, isUpdate, form]);
 
   useEffect(() => {
-    if (companyCreate?.done || companyUpdate?.done) {
+    if (hasSubmittedRef.current && (companyCreate?.done || companyUpdate?.done)) {
+      hasSubmittedRef.current = false;
       if (companyCreate?.error || companyUpdate?.error) {
         notification.error({
           message: 'เกิดข้อผิดพลาด',
           description: isUpdate ? companyUpdate?.error : companyCreate?.error,
           placement: 'bottomRight'
         });
+        dispatchClearCreateCompany();
+        dispatchClearUpdateCompany();
       } else {
         if (!isUpdate) {
           form.resetFields();
@@ -49,6 +53,8 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
           message: isUpdate ? 'อัปเดตข้อมูลบริษัทประกันสำเร็จ' : 'เพิ่มบริษัทประกันสำเร็จ',
           placement: 'bottomRight'
         });
+        dispatchClearCreateCompany();
+        dispatchClearUpdateCompany();
         if (onSuccess) onSuccess();
       }
     }
@@ -56,6 +62,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [companyCreate?.done, companyUpdate?.done]);
 
   const onFinish = (values) => {
+    hasSubmittedRef.current = true;
     if (isUpdate) {
       dispatchUpdateCompany(info?._id, values);
     } else {

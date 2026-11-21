@@ -16,7 +16,7 @@ export const createCustomerReducer = (state = initCustomerInfo, { type, payload 
         case TYPE.CUSTOMER_CREATE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.CUSTOMER_CREATE_CLEAR:
-            return state;
+            return initCustomerInfo;
         default:
             return state;
     }
@@ -59,7 +59,7 @@ export const deleteCustomerReducer = (state = initDeleteCustomerList, { type, pa
         case TYPE.CUSTOMER_DELETE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.CUSTOMER_DELETE_CLEAR:
-            return state
+            return initDeleteCustomerList;
         default:
             return state;
     }
@@ -81,7 +81,7 @@ export const updateCustomerReducer = (state = initUpdateCustomer, { type, payloa
         case TYPE.CUSTOMER_UPDATE_FAIL:
             return { ...state, loading: false, error: payload, done: true }
         case TYPE.CUSTOMER_UPDATE_CLEAR:
-            return state
+            return initUpdateCustomer;
         default:
             return state;
     }

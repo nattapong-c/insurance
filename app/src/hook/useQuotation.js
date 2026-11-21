@@ -29,6 +29,10 @@ export const useQuotationDispatch = () => {
         dispatch(ACTION.updateQuotationAction(id,data));
     };
 
+    const dispatchClearUpdateQuotation = () => {
+        dispatch(ACTION.updateQuotationAction(null, { clear: true }));
+    };
+
     const dispatchExportQuotation = (id, data) => {
         dispatch(ACTION.exportQuotationAction(id, data));
     }
@@ -42,6 +46,7 @@ export const useQuotationDispatch = () => {
         dispatchClearCreateQuotation,
         dispatchGetQuotation,
         dispatchUpdateQuotation,
+        dispatchClearUpdateQuotation,
         dispatchExportQuotation,
         dispatchDeleteQuotation
     };

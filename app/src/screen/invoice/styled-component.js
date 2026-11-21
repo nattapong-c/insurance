@@ -1,20 +1,22 @@
 import styled from 'styled-components';
 
 export const PageHeader = styled.div`
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 
   .header-left {
     h1 {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
       letter-spacing: -0.02em;
       margin: 0 0 2px 0;
     }
     p {
-      font-size: 13px;
+      font-size: 12.5px;
       margin: 0;
     }
   }
@@ -24,13 +26,14 @@ export const InvoiceBadge = styled.span`
   display: inline-flex;
   align-items: center;
   font-family: 'JetBrains Mono', monospace;
-  background: ${({ theme }) => (theme.mode === 'dark' ? '#1C1C20' : '#F4F4F5')};
+  font-variant-numeric: tabular-nums;
+  background: ${({ theme }) => theme.surfaceSubtle};
   color: ${({ theme }) => theme.textPrimary};
   border: 1px solid ${({ theme }) => theme.border};
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 6px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12.5px;
   letter-spacing: 0.2px;
 `;
 
@@ -38,27 +41,28 @@ export const PlateTag = styled.span`
   display: inline-flex;
   align-items: center;
   font-family: 'JetBrains Mono', monospace;
-  background: ${({ theme }) => (theme.mode === 'dark' ? '#18181B' : '#FFFFFF')};
-  color: ${({ theme }) => theme.textPrimary};
-  border: 1px solid ${({ theme }) => theme.border};
-  padding: 2px 7px;
-  border-radius: 5px;
+  background: ${({ theme }) => theme.brandBg};
+  color: ${({ theme }) => theme.brandPrimary};
+  border: 1px solid ${({ theme }) => (theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.3)' : '#BFDBFE')};
+  padding: 2px 8px;
+  border-radius: 6px;
   font-weight: 600;
   font-size: 12px;
 `;
 
 export const SummaryBox = styled.div`
-  background: ${({ theme }) => (theme.mode === 'dark' ? '#1C1C20' : '#F8F8FA')};
+  background: ${({ theme }) => theme.surfaceSubtle};
   border: 1px solid ${({ theme }) => theme.border};
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin: 18px 0;
+  border-radius: ${({ theme }) => theme.cardRadius};
+  padding: 14px 18px;
+  margin: 16px 0;
 
   .summary-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
     font-size: 13px;
+    font-variant-numeric: tabular-nums;
     color: ${({ theme }) => theme.textSecondary};
 
     &:last-child {

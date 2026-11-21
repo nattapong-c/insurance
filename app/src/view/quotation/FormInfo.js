@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form,
@@ -52,14 +52,17 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   const {
     dispatchClearCreateQuotation,
     dispatchCreateQuotation,
-    dispatchUpdateQuotation
+    dispatchUpdateQuotation,
+    dispatchClearUpdateQuotation
   } = useQuotationDispatch();
   const { quotationCreate, quotationUpdate } = useQuotationState();
   const { companyList } = useCompanyState();
   const { customerList } = useCustomerState();
+  const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
     dispatchClearCreateQuotation();
+    dispatchClearUpdateQuotation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -86,13 +89,16 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [info, isUpdate, form, companyList.companyList, customerList.customerList]);
 
   useEffect(() => {
-    if (quotationCreate?.done || quotationUpdate?.done) {
+    if (hasSubmittedRef.current && (quotationCreate?.done || quotationUpdate?.done)) {
+      hasSubmittedRef.current = false;
       if (quotationCreate?.error || quotationUpdate?.error) {
         notification.error({
           message: 'เกิดข้อผิดพลาด',
           description: isUpdate ? quotationUpdate?.error : quotationCreate?.error,
           placement: 'bottomRight'
         });
+        dispatchClearCreateQuotation();
+        dispatchClearUpdateQuotation();
       } else {
         if (!isUpdate) {
           form.resetFields();
@@ -101,6 +107,8 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
           message: isUpdate ? 'อัปเดตใบเสนอราคาสำเร็จ' : 'สร้างใบเสนอราคาสำเร็จ',
           placement: 'bottomRight'
         });
+        dispatchClearCreateQuotation();
+        dispatchClearUpdateQuotation();
         if (onSuccess) onSuccess();
       }
     }
@@ -108,6 +116,7 @@ const FormInfo = ({ info, isUpdate, onSuccess }) => {
   }, [quotationCreate?.done, quotationUpdate?.done]);
 
   const onFinish = (values) => {
+    hasSubmittedRef.current = true;
     if (isUpdate) {
       dispatchUpdateQuotation(info?._id, values);
     } else {

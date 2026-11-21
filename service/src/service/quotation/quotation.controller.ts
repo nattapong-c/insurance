@@ -4,7 +4,7 @@ import { formatNumber2Decimal } from "../../utils/number";
 import path from "path";
 import fs from "fs";
 import mustache from "mustache";
-import pdf from "html-pdf";
+import { generatePdfBuffer } from "../../utils/pdf";
 
 
 const exportPDF = async (res: Response, quotation: Quotation) => {
@@ -49,12 +49,9 @@ const exportPDF = async (res: Response, quotation: Quotation) => {
     let directory = path.join(__dirname, `../../../template/quotation.html`);
     let html = mustache.render(fs.readFileSync(directory, "utf8"), data);
     try {
-        pdf.create(html, { format: "A4", orientation: "landscape" }).toBuffer(async (err, buffer) => {
-            if (err || !Buffer.isBuffer(buffer)) {
-                return res.status(400).send({ error: `create pdf error : ${err}` });
-            }
-            return res.send(buffer);
-        });
+        const buffer = await generatePdfBuffer(html, { landscape: true });
+        res.setHeader("Content-Type", "application/pdf");
+        return res.send(buffer);
     } catch (err) {
         return res.status(400).send({ error: `create pdf error : ${err}` });
     }

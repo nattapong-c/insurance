@@ -1,2 +1,9 @@
 # Added by code-review-graph
 .code-review-graph/
+
+# AI Agent customizations
+.agent/
+.agents/
+
+# Local environment secrets
+.env

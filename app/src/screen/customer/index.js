@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button, Drawer, Modal, Checkbox } from 'antd';
+import { Input, Button, Drawer, Modal, Checkbox, Tooltip } from 'antd';
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -11,7 +11,9 @@ import Wrapper from '../../component/wrapper/Wrapper';
 import ResponsiveList, {
   TableCardContainer,
   TableToolbar,
+  SelectionBar,
   ItemCountBadge,
+  RowActionGroup,
   CardHeader,
   CardBody
 } from '../../component/cardList/ResponsiveList';
@@ -70,16 +72,28 @@ const Customer = () => {
     {
       title: 'จัดการ',
       key: 'actions',
-      dataIndex: '_id',
-      width: 70,
-      align: 'center',
-      render: (text) => (
-        <Button
-          type="text"
-          size="small"
-          icon={<EditOutlined style={{ fontSize: '15px' }} />}
-          onClick={() => selectData(customerList.customerList, text)}
-        />
+      width: 100,
+      align: 'right',
+      render: (_, record) => (
+        <RowActionGroup>
+          <Tooltip title="แก้ไข">
+            <Button
+              type="text"
+              size="small"
+              icon={<EditOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => selectData(customerList.customerList, record._id)}
+            />
+          </Tooltip>
+          <Tooltip title="ลบ">
+            <Button
+              type="text"
+              size="small"
+              danger
+              icon={<DeleteOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => handleDeleteOne(record)}
+            />
+          </Tooltip>
+        </RowActionGroup>
       )
     }
   ];
@@ -96,6 +110,19 @@ const Customer = () => {
     setData(null);
     setOpenForm(true);
     setIsUpdate(false);
+  };
+
+  const handleDeleteOne = (record) => {
+    Modal.confirm({
+      title: 'ยืนยันการลบข้อมูลลูกค้า',
+      content: `ต้องการลบข้อมูลลูกค้าทะเบียน ${record.plate_number} หรือไม่?`,
+      okText: 'ลบข้อมูล',
+      okType: 'danger',
+      cancelText: 'ยกเลิก',
+      onOk() {
+        dispatchDeleteCustomer(`id_list=${record._id}`);
+      }
+    });
   };
 
   const handleDeleteSelected = () => {
@@ -142,12 +169,21 @@ const Customer = () => {
             <Checkbox checked={isSelected} onChange={toggleSelect} />
             <PlateTag>{item.plate_number}</PlateTag>
           </div>
-          <Button
-            type="text"
-            size="small"
-            icon={<EditOutlined style={{ fontSize: '15px' }} />}
-            onClick={() => selectData(customerList.customerList, item._id)}
-          />
+          <RowActionGroup>
+            <Button
+              type="text"
+              size="small"
+              icon={<EditOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => selectData(customerList.customerList, item._id)}
+            />
+            <Button
+              type="text"
+              size="small"
+              danger
+              icon={<DeleteOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => handleDeleteOne(item)}
+            />
+          </RowActionGroup>
         </CardHeader>
         <CardBody>
           <div style={{ fontWeight: 600, color: 'inherit' }}>{name}</div>
@@ -190,20 +226,31 @@ const Customer = () => {
             </div>
 
             <div className="toolbar-right">
-              {selectedRow.length > 0 && (
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={handleDeleteSelected}
-                >
-                  ลบ ({selectedRow.length})
-                </Button>
-              )}
               <Button type="primary" icon={<PlusOutlined />} onClick={createData}>
                 เพิ่มลูกค้า
               </Button>
             </div>
           </TableToolbar>
+
+          {selectedRow.length > 0 && (
+            <SelectionBar>
+              <span>เลือกอยู่ {selectedRow.length} รายการ</span>
+              <div className="sel-actions">
+                <Button size="small" type="text" onClick={() => setSelectedRow([])}>
+                  ยกเลิกการเลือก
+                </Button>
+                <Button
+                  size="small"
+                  danger
+                  type="primary"
+                  icon={<DeleteOutlined />}
+                  onClick={handleDeleteSelected}
+                >
+                  ลบที่เลือก ({selectedRow.length})
+                </Button>
+              </div>
+            </SelectionBar>
+          )}
 
           <ResponsiveList
             columns={columns}

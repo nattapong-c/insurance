@@ -36,31 +36,41 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   a {
-    color: ${({ theme }) => (theme.mode === 'dark' ? '#FAFAFA' : '#18181B')};
+    color: ${({ theme }) => theme.brandPrimary};
     text-decoration: none;
     transition: opacity 0.2s ease;
 
     &:hover {
-      opacity: 0.8;
+      opacity: 0.85;
     }
   }
 
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
   /* =========================================================
-     Apple / Mercury Minimalist Button Styles
+     Enterprise Portal Button Styles
      ========================================================= */
   .ant-btn {
     border-radius: ${({ theme }) => theme.btnRadius} !important;
     font-weight: 500 !important;
-    height: 40px !important;
-    padding: 0 16px !important;
+    height: 36px !important;
+    padding: 0 14px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 8px !important;
-    font-size: 14px !important;
+    gap: 6px !important;
+    font-size: 13.5px !important;
     letter-spacing: -0.01em !important;
-    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1) !important;
     border: 1px solid transparent !important;
+
+    &.ant-btn-sm {
+      height: 28px !important;
+      padding: 0 10px !important;
+      font-size: 12.5px !important;
+    }
 
     > span {
       color: inherit !important;
@@ -95,9 +105,10 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  /* Secondary / Default Button */
+  /* Secondary / Default Button (AntD v4 renders plain .ant-btn without .ant-btn-default) */
+  .ant-btn:not(.ant-btn-primary):not(.ant-btn-text):not(.ant-btn-link):not(.ant-btn-dashed):not(.ant-btn-dangerous),
   .ant-btn-default {
-    background-color: ${({ theme }) => (theme.mode === 'dark' ? '#1C1C20' : '#FFFFFF')} !important;
+    background-color: ${({ theme }) => theme.surfaceSubtle} !important;
     border-color: ${({ theme }) => theme.border} !important;
     color: ${({ theme }) => theme.textPrimary} !important;
     box-shadow: ${({ theme }) => theme.shadowSm} !important;
@@ -107,8 +118,8 @@ export const GlobalStyles = createGlobalStyle`
     }
 
     &:hover, &:focus {
-      background-color: ${({ theme }) => (theme.mode === 'dark' ? '#27272A' : '#F4F4F5')} !important;
-      border-color: ${({ theme }) => (theme.mode === 'dark' ? '#3F3F46' : '#D4D4D8')} !important;
+      background-color: ${({ theme }) => theme.surfaceHover} !important;
+      border-color: ${({ theme }) => theme.brandPrimary} !important;
       color: ${({ theme }) => theme.textPrimary} !important;
 
       > span, .anticon {
@@ -133,7 +144,7 @@ export const GlobalStyles = createGlobalStyle`
     }
   }
 
-  .ant-btn-dangerous:not(.ant-btn-primary) {
+  .ant-btn-dangerous:not(.ant-btn-primary):not(.ant-btn-text):not(.ant-btn-link) {
     background-color: ${({ theme }) => (theme.mode === 'dark' ? 'rgba(239, 68, 68, 0.12)' : '#FEF2F2')} !important;
     border-color: ${({ theme }) => (theme.mode === 'dark' ? 'rgba(239, 68, 68, 0.3)' : '#FCA5A5')} !important;
     color: #EF4444 !important;
@@ -150,6 +161,21 @@ export const GlobalStyles = createGlobalStyle`
       > span, .anticon {
         color: #FFFFFF !important;
       }
+    }
+  }
+
+  .ant-btn-text.ant-btn-dangerous {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: #EF4444 !important;
+
+    > span, .anticon {
+      color: #EF4444 !important;
+    }
+
+    &:hover, &:focus {
+      background-color: ${({ theme }) => theme.statusDangerBg} !important;
+      color: #EF4444 !important;
     }
   }
 
@@ -231,21 +257,22 @@ export const GlobalStyles = createGlobalStyle`
     border-radius: 0 0 ${({ theme }) => theme.cardRadius} ${({ theme }) => theme.cardRadius} !important;
 
     .ant-table-thead > tr > th {
-      background: ${({ theme }) => (theme.mode === 'dark' ? '#18181C' : '#F9F9FB')} !important;
+      background: ${({ theme }) => theme.surfaceSubtle} !important;
       color: ${({ theme }) => theme.textSecondary} !important;
       border-bottom: 1px solid ${({ theme }) => theme.border} !important;
-      font-weight: 500;
-      font-size: 12px;
+      font-weight: 600;
+      font-size: 11.5px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 12px 16px;
+      letter-spacing: 0.4px;
+      padding: 10px 14px;
     }
 
     .ant-table-tbody > tr > td {
       border-bottom: 1px solid ${({ theme }) => theme.borderSubtle} !important;
       color: ${({ theme }) => theme.textPrimary} !important;
       background: ${({ theme }) => theme.surface} !important;
-      padding: 14px 16px;
+      padding: 11px 14px;
+      font-size: 13.5px;
       transition: background-color 0.15s ease;
     }
 
@@ -295,12 +322,12 @@ export const GlobalStyles = createGlobalStyle`
   .ant-input-number,
   .ant-input-affix-wrapper,
   .ant-picker {
-    background-color: ${({ theme }) => (theme.mode === 'dark' ? '#18181B' : '#FFFFFF')} !important;
+    background-color: ${({ theme }) => (theme.mode === 'dark' ? theme.surfaceSubtle : '#FFFFFF')} !important;
     border: 1px solid ${({ theme }) => theme.border} !important;
     color: ${({ theme }) => theme.textPrimary} !important;
     border-radius: ${({ theme }) => theme.inputRadius} !important;
-    min-height: 40px;
-    font-size: 14px;
+    min-height: 36px;
+    font-size: 13.5px;
 
     input {
       background-color: transparent !important;
@@ -312,8 +339,23 @@ export const GlobalStyles = createGlobalStyle`
     }
 
     &:focus, &:hover, &-focused {
-      border-color: ${({ theme }) => (theme.mode === 'dark' ? '#52525B' : '#71717A')} !important;
-      box-shadow: 0 0 0 3px ${({ theme }) => (theme.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)')} !important;
+      border-color: ${({ theme }) => theme.brandPrimary} !important;
+      box-shadow: 0 0 0 3px ${({ theme }) => (theme.mode === 'dark' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(37, 99, 235, 0.12)')} !important;
+    }
+  }
+
+  /* Prevent double border on inner input inside .ant-input-affix-wrapper */
+  .ant-input-affix-wrapper > input.ant-input {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+
+    &:focus, &:hover {
+      border: none !important;
+      box-shadow: none !important;
     }
   }
 

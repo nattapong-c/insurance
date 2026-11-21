@@ -6,14 +6,17 @@ import {
   EditOutlined,
   SearchOutlined,
   FilePdfOutlined,
-  BankOutlined
+  BankOutlined,
+  CopyOutlined
 } from '@ant-design/icons';
 import _ from 'lodash';
 import Wrapper from '../../component/wrapper/Wrapper';
 import ResponsiveList, {
   TableCardContainer,
   TableToolbar,
+  SelectionBar,
   ItemCountBadge,
+  RowActionGroup,
   CardHeader,
   CardBody,
   CardFooter
@@ -21,6 +24,7 @@ import ResponsiveList, {
 import { PageHeader, InvoiceBadge, PlateTag } from './styled-component';
 import FormInfo from '../../view/invoice/FormInfo';
 import { useInvoiceDispatch, useInvoiceState } from '../../hook/useInvoice';
+import { useDashboardDispatch, useDashboardState } from '../../hook/useDashboard';
 import { useCompanyDispatch } from '../../hook/useCompany';
 import { useCustomerDispatch } from '../../hook/useCustomer';
 import Loading from '../../component/loading/Loading';
@@ -36,7 +40,7 @@ const formatText = (text) => {
 const Invoice = () => {
   const [data, setData] = useState(null);
   const [openForm, setOpenForm] = useState(false);
-  const [isUpdate, setIsUpdate] = useState(false);
+  const [formMode, setFormMode] = useState('create');
   const [selectedRow, setSelectedRow] = useState([]);
   const [filter, setFilter] = useState('');
   const { isMobile } = useResponsive();
@@ -45,8 +49,17 @@ const Invoice = () => {
     useInvoiceDispatch();
   const { invoiceCreate, invoiceDelete, invoiceList, invoiceExport } =
     useInvoiceState();
+  const { dispatchGetInvoiceInfo } = useDashboardDispatch();
+  const { invoiceInfo } = useDashboardState();
   const { dispatchGetCompany } = useCompanyDispatch();
   const { dispatchGetCustomer } = useCustomerDispatch();
+
+  const latestFromList =
+    Array.isArray(invoiceList?.list) && invoiceList.list.length > 0
+      ? Math.max(...invoiceList.list.map((i) => Number(i.invoice_no) || 0))
+      : 0;
+  const latestNumber = Math.max(Number(invoiceInfo?.latest_number) || 0, latestFromList);
+  const nextInvoiceNo = latestNumber > 0 ? latestNumber + 1 : 101;
 
   const columns = [
     {
@@ -73,33 +86,44 @@ const Invoice = () => {
     {
       title: 'จัดการ',
       key: 'actions',
-      dataIndex: '_id',
-      width: 70,
-      align: 'center',
-      render: (text) => (
-        <Button
-          type="text"
-          size="small"
-          icon={<EditOutlined style={{ fontSize: '15px' }} />}
-          onClick={() => selectData(invoiceList.list, text)}
-        />
-      )
-    },
-    {
-      title: 'PDF',
-      key: 'export',
-      dataIndex: 'invoice_no',
-      width: 70,
-      align: 'center',
-      render: (text) => (
-        <Tooltip title="ส่งออก / พิมพ์ PDF">
-          <Button
-            type="text"
-            size="small"
-            icon={<FilePdfOutlined style={{ color: '#EF4444', fontSize: '16px' }} />}
-            onClick={() => dispatchExportInvoice(text)}
-          />
-        </Tooltip>
+      width: 164,
+      align: 'right',
+      render: (_, record) => (
+        <RowActionGroup>
+          <Tooltip title="ส่งออก / พิมพ์ PDF">
+            <Button
+              type="text"
+              size="small"
+              icon={<FilePdfOutlined style={{ color: '#EF4444', fontSize: '15px' }} />}
+              onClick={() => dispatchExportInvoice(record.invoice_no)}
+            />
+          </Tooltip>
+          <Tooltip title="คัดลอก / ต่ออายุเป็นบิลใหม่">
+            <Button
+              type="text"
+              size="small"
+              icon={<CopyOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => cloneData(record)}
+            />
+          </Tooltip>
+          <Tooltip title="แก้ไข">
+            <Button
+              type="text"
+              size="small"
+              icon={<EditOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => selectData(invoiceList.list, record._id)}
+            />
+          </Tooltip>
+          <Tooltip title="ลบ">
+            <Button
+              type="text"
+              size="small"
+              danger
+              icon={<DeleteOutlined style={{ fontSize: '15px' }} />}
+              onClick={() => handleDeleteOne(record)}
+            />
+          </Tooltip>
+        </RowActionGroup>
       )
     }
   ];
@@ -107,15 +131,34 @@ const Invoice = () => {
   const selectData = (list, id) => {
     const selected = _.find(list, { _id: id });
     setData(selected);
+    setFormMode('update');
     setOpenForm(true);
-    setIsUpdate(true);
     return selected;
+  };
+
+  const cloneData = (record) => {
+    setData(record);
+    setFormMode('clone');
+    setOpenForm(true);
   };
 
   const createData = () => {
     setData(null);
+    setFormMode('create');
     setOpenForm(true);
-    setIsUpdate(false);
+  };
+
+  const handleDeleteOne = (record) => {
+    Modal.confirm({
+      title: 'ยืนยันการลบใบวางบิล',
+      content: `ต้องการลบใบวางบิลเลขที่ ${record.invoice_no} (${record.plate_no || '-'}) หรือไม่?`,
+      okText: 'ลบข้อมูล',
+      okType: 'danger',
+      cancelText: 'ยกเลิก',
+      onOk() {
+        dispatchDeleteInvoice(`id_list=${record._id}`);
+      }
+    });
   };
 
   const handleDeleteSelected = () => {
@@ -147,6 +190,7 @@ const Invoice = () => {
 
   useEffect(() => {
     dispatchGetInvoice(`page=1&size=${SIZE_DATA}`);
+    dispatchGetInvoiceInfo();
     dispatchGetCompany(`page=1&size=100`);
     dispatchGetCustomer(`page=1&size=100`);
     if (invoiceDelete?.done) {
@@ -179,16 +223,33 @@ const Invoice = () => {
           icon={<FilePdfOutlined style={{ color: '#EF4444' }} />}
           onClick={() => dispatchExportInvoice(item.invoice_no)}
         >
-          พิมพ์ PDF
+          PDF
         </Button>
-        <Button
-          size="small"
-          type="text"
-          icon={<EditOutlined />}
-          onClick={() => selectData(invoiceList.list, item._id)}
-        >
-          แก้ไข
-        </Button>
+        <RowActionGroup>
+          <Button
+            size="small"
+            type="text"
+            icon={<CopyOutlined />}
+            onClick={() => cloneData(item)}
+          >
+            ต่ออายุ
+          </Button>
+          <Button
+            size="small"
+            type="text"
+            icon={<EditOutlined />}
+            onClick={() => selectData(invoiceList.list, item._id)}
+          >
+            แก้ไข
+          </Button>
+          <Button
+            size="small"
+            type="text"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDeleteOne(item)}
+          />
+        </RowActionGroup>
       </CardFooter>
     </>
   );
@@ -227,20 +288,31 @@ const Invoice = () => {
             </div>
 
             <div className="toolbar-right">
-              {selectedRow.length > 0 && (
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={handleDeleteSelected}
-                >
-                  ลบ ({selectedRow.length})
-                </Button>
-              )}
               <Button type="primary" icon={<PlusOutlined />} onClick={createData}>
                 ออกใบวางบิล
               </Button>
             </div>
           </TableToolbar>
+
+          {selectedRow.length > 0 && (
+            <SelectionBar>
+              <span>เลือกอยู่ {selectedRow.length} รายการ</span>
+              <div className="sel-actions">
+                <Button size="small" type="text" onClick={() => setSelectedRow([])}>
+                  ยกเลิกการเลือก
+                </Button>
+                <Button
+                  size="small"
+                  danger
+                  type="primary"
+                  icon={<DeleteOutlined />}
+                  onClick={handleDeleteSelected}
+                >
+                  ลบที่เลือก ({selectedRow.length})
+                </Button>
+              </div>
+            </SelectionBar>
+          )}
 
           <ResponsiveList
             columns={columns}
@@ -265,7 +337,13 @@ const Invoice = () => {
         </TableCardContainer>
 
         <Drawer
-          title={isUpdate ? 'แก้ไขใบวางบิล' : 'สร้างใบวางบิลใหม่'}
+          title={
+            formMode === 'update'
+              ? 'แก้ไขใบวางบิล'
+              : formMode === 'clone'
+              ? `สร้างใบวางบิลใหม่ (ต่ออายุจาก #${data?.invoice_no})`
+              : 'สร้างใบวางบิลใหม่'
+          }
           placement={isMobile ? 'bottom' : 'right'}
           height={isMobile ? '90vh' : undefined}
           width={isMobile ? '100%' : 680}
@@ -275,7 +353,9 @@ const Invoice = () => {
         >
           <FormInfo
             info={data}
-            isUpdate={isUpdate}
+            mode={formMode}
+            isUpdate={formMode === 'update'}
+            nextInvoiceNo={nextInvoiceNo}
             onSuccess={() => setOpenForm(false)}
           />
         </Drawer>
